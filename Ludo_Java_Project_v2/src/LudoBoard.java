@@ -21,17 +21,23 @@ class LudoBoard
 	static public Team[] createTiles()
 	{
 		
-		// Initialize Gridpanes for tiles
-		GridPane p1Tiles = new GridPane();
-		GridPane p2Tiles = new GridPane();
-		GridPane p3Tiles = new GridPane();
-		GridPane p4Tiles = new GridPane();
+		// Initialize Gridpanes for tilePane
+		GridPane p1tilePane = new GridPane();
+		GridPane p2tilePane = new GridPane();
+		GridPane p3tilePane = new GridPane();
+		GridPane p4tilePane = new GridPane();
+		
+		// Initialize Stackpane for tiles for players
+		StackPane[] p1Tiles = new StackPane[18];
+		StackPane[] p2Tiles = new StackPane[18];
+		StackPane[] p3Tiles = new StackPane[18];
+		StackPane[] p4Tiles = new StackPane[18];
 		
 		// Creates Team object for each of the 4 players
-		Team player1 = new Team("Player 1", Color.BLUE, p1Tiles);
-		Team player2 = new Team("Player 2", Color.YELLOW, p2Tiles);
-		Team player3 = new Team("Player 3", Color.RED, p3Tiles);
-		Team player4 = new Team("Player 4", Color.GREEN, p4Tiles);
+		Team player1 = new Team("Player 1", Color.BLUE, p1tilePane, p1Tiles);
+		Team player2 = new Team("Player 2", Color.YELLOW, p2tilePane, p2Tiles);
+		Team player3 = new Team("Player 3", Color.RED, p3tilePane, p3Tiles);
+		Team player4 = new Team("Player 4", Color.GREEN, p4tilePane, p4Tiles);
 		
 		// puts them in an array
 		Team players[] = {player1, player2, player3, player4};
@@ -41,11 +47,6 @@ class LudoBoard
 		{
 			// variable used to determine pawn number to order list for movement
 			int pawnCount = 0;
-			
-			// sets padding and margins for gridpanes
-			players[i].tiles.setPadding(new Insets(5));
-			players[i].tiles.setHgap(4);
-			players[i].tiles.setVgap(4);
 			
 			// int variables to determine tile placements based on the iteration count
 			int col;
@@ -70,27 +71,38 @@ class LudoBoard
 					
 					
 					int[] pos = {j, k};
+					
+					// Create stackpane for tile and add it to player object
+					StackPane stackTile = new StackPane();
+					players[i].tiles[pawnCount] = stackTile;
 					Rectangle square = new Rectangle(50f, 50f);
-					Tile gameTile = new Tile(players[i].name, square, pos, false);
-					// If statement to determine starting tiles, and colors them accordingly
+					stackTile.getChildren().add(square);
+					Tile gameTile = new Tile(players[i].name, stackTile, pos, false);
+					// If statement to determine starting tilePane, and colors them accordingly
 					if(i == 0 && j == 1 && k == 0 || i == 1 && j == 0 && k == 4 || i == 2 && j == 4 && k == 2 || i == 3 && j == 2 && k == 1)
 					{
-						gameTile.square.setFill(players[i].color);
+						square.setFill(players[i].color);
 					}
 					else 
 					{ 
-						gameTile.square.setFill(Color.GREY); 
+						square.setFill(Color.GREY); 
 					}
 					
-					gameTile.square.setStroke(players[i].color);
+					square.setStroke(players[i].color);
+					
+					
+					// sets padding and margins for gridpanes
+					players[i].tilePane.setPadding(new Insets(5));
+					players[i].tilePane.setHgap(4);
+					players[i].tilePane.setVgap(4);
 					
 					//adds the tile to the players gameTile gridpane
-					players[i].tiles.add(gameTile.square, j,  k);
+					players[i].tilePane.add(stackTile, j,  k);
 					
 					pawnCountTxt.setText(Integer.toString(pawnCount));
 					try
 					{
-						players[i].tiles.add(pawnCountTxt,  j,  k);
+						//players[i].tilePane.add(pawnCountTxt,  j,  k);
 					}
 					catch (Exception e)
 					{
@@ -100,21 +112,128 @@ class LudoBoard
 				}
 				
 			}
-			//aligns the tiles to the center
-			players[i].tiles.setAlignment(Pos.CENTER);
+			//aligns the tilePane to the center
+			players[i].tilePane.setAlignment(Pos.CENTER);
 		}
 		//returns the players array when the method is called
 		return players;
 	}
 	
-	static public Team orderBlueTiles(Team player)
+	// Returns an array of the Blue tilePane in order of tile movement
+	static public StackPane[] orderBlueTiles(Team player)
 	{
-		ObservableList<Node> blueTilesList = player.tiles.getChildren();
-		Object[] blueTilesArray = blueTilesList.toArray();
-		System.out.print(blueTilesArray.toString());
+		StackPane[] bluetilePaneRef = player.tiles;
 		
-		return player;
+		// Uses the bluetilePaneRef to order the rectangles in order of how pawns move across them, allowing easier pawn movement
+		player.tiles[0] = bluetilePaneRef[17];
+		player.tiles[1] = bluetilePaneRef[14];
+		player.tiles[2] = bluetilePaneRef[11];
+		player.tiles[3] = bluetilePaneRef[8];
+		player.tiles[4] = bluetilePaneRef[5];
+		player.tiles[5] = bluetilePaneRef[2];
+		player.tiles[6] = bluetilePaneRef[1];
+		player.tiles[7] = bluetilePaneRef[0];
+		player.tiles[8] = bluetilePaneRef[3];
+		player.tiles[9] = bluetilePaneRef[6];
+		player.tiles[10] = bluetilePaneRef[9];
+		player.tiles[11] = bluetilePaneRef[12];
+		player.tiles[12] = bluetilePaneRef[15];
+		player.tiles[13] = bluetilePaneRef[4];
+		player.tiles[14] = bluetilePaneRef[7];
+		player.tiles[15] = bluetilePaneRef[10];
+		player.tiles[16] = bluetilePaneRef[13];
+		player.tiles[17] = bluetilePaneRef[16];
+		
+		return player.tiles;
 	}
+	
+	// Returns an array of the Yellow tilePane in order of tile movement
+	static public StackPane[] orderYellowTiles(Team player)
+	{
+		StackPane[] yellowtilePaneRef = player.tiles;
+		
+		// Uses the bluetilePaneRef to order the rectangles in order of how pawns move across them, allowing easier pawn movement
+		player.tiles[0] = yellowtilePaneRef[12];
+		player.tiles[1] = yellowtilePaneRef[13];
+		player.tiles[2] = yellowtilePaneRef[14];
+		player.tiles[3] = yellowtilePaneRef[15];
+		player.tiles[4] = yellowtilePaneRef[16];
+		player.tiles[5] = yellowtilePaneRef[17];
+		player.tiles[6] = yellowtilePaneRef[11];
+		player.tiles[7] = yellowtilePaneRef[5];
+		player.tiles[8] = yellowtilePaneRef[4];
+		player.tiles[9] = yellowtilePaneRef[3];
+		player.tiles[10] = yellowtilePaneRef[2];
+		player.tiles[11] = yellowtilePaneRef[1];
+		player.tiles[12] = yellowtilePaneRef[0];
+		player.tiles[13] = yellowtilePaneRef[10];
+		player.tiles[14] = yellowtilePaneRef[9];
+		player.tiles[15] = yellowtilePaneRef[8];
+		player.tiles[16] = yellowtilePaneRef[7];
+		player.tiles[17] = yellowtilePaneRef[6];
+		
+		
+		return player.tiles;
+	}
+		
+	// Returns an array of the Red tilePane in order of tile movement
+	static public StackPane[] orderRedTiles(Team player)
+	{
+		StackPane[] redtilePaneRef = player.tiles;
+		
+		// Uses the bluetilePaneRef to order the rectangles in order of how pawns move across them, allowing easier pawn movement
+		player.tiles[0] = redtilePaneRef[0];
+		player.tiles[1] = redtilePaneRef[3];
+		player.tiles[2] = redtilePaneRef[6];
+		player.tiles[3] = redtilePaneRef[9];
+		player.tiles[4] = redtilePaneRef[12];
+		player.tiles[5] = redtilePaneRef[15];
+		player.tiles[6] = redtilePaneRef[16];
+		player.tiles[7] = redtilePaneRef[17];
+		player.tiles[8] = redtilePaneRef[14];
+		player.tiles[9] = redtilePaneRef[11];
+		player.tiles[10] = redtilePaneRef[8];
+		player.tiles[11] = redtilePaneRef[5];
+		player.tiles[12] = redtilePaneRef[2];
+		player.tiles[13] = redtilePaneRef[13];
+		player.tiles[14] = redtilePaneRef[10];
+		player.tiles[15] = redtilePaneRef[7];
+		player.tiles[16] = redtilePaneRef[4];
+		player.tiles[17] = redtilePaneRef[1];
+		
+		
+		return player.tiles;
+	}
+				
+	// Returns an array of the Blue tilePane in order of tile movement
+	static public StackPane[] ordergreenTiles(Team player)
+	{
+		StackPane[] greentilePaneRef = player.tiles;
+		
+		// Uses the bluetilePaneRef to order the rectangles in order of how pawns move across them, allowing easier pawn movement
+		player.tiles[0] = greentilePaneRef[5];
+		player.tiles[1] = greentilePaneRef[4];
+		player.tiles[2] = greentilePaneRef[3];
+		player.tiles[3] = greentilePaneRef[2];
+		player.tiles[4] = greentilePaneRef[1];
+		player.tiles[5] = greentilePaneRef[0];
+		player.tiles[6] = greentilePaneRef[6];
+		player.tiles[7] = greentilePaneRef[12];
+		player.tiles[8] = greentilePaneRef[13];
+		player.tiles[9] = greentilePaneRef[14];
+		player.tiles[10] = greentilePaneRef[15];
+		player.tiles[11] = greentilePaneRef[16];
+		player.tiles[12] = greentilePaneRef[17];
+		player.tiles[13] = greentilePaneRef[7];
+		player.tiles[14] = greentilePaneRef[8];
+		player.tiles[15] = greentilePaneRef[9];
+		player.tiles[16] = greentilePaneRef[10];
+		player.tiles[17] = greentilePaneRef[11];
+		
+		
+		return player.tiles;
+	}				
+		
 	
 	// Adds squares for final pawn area
 	static public GridPane createFinalPane(Team[] players)

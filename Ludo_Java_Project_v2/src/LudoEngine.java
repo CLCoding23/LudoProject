@@ -33,8 +33,6 @@ public class LudoEngine extends Application {
 		// calls the createTiles() method from LudoBoard, creating the tiles that the pawns must travel to finish the game
 		players = LudoBoard.createTiles();
 		
-		LudoBoard.orderBlueTiles(players[0]);
-		
 		BorderPane bdrPane = new BorderPane();
 		
 		
@@ -88,10 +86,17 @@ public class LudoEngine extends Application {
 		gameBoard.add(stack4,  2,  0);
 		
 		// addds the tiles needed for pawns to move on to the game board
-		gameBoard.add(players[0].tiles,  0, 1);
-		gameBoard.add(players[1].tiles,  1, 2);
-		gameBoard.add(players[2].tiles,  2, 1);
-		gameBoard.add(players[3].tiles,  1, 0);
+		gameBoard.add(players[0].tilePane,  0, 1);
+		gameBoard.add(players[1].tilePane,  1, 2);
+		gameBoard.add(players[2].tilePane,  2, 1);
+		gameBoard.add(players[3].tilePane,  1, 0);
+		
+		players[0].tiles = LudoBoard.orderBlueTiles(players[0]);
+		players[1].tiles = LudoBoard.orderYellowTiles(players[1]);
+		players[2].tiles = LudoBoard.orderYellowTiles(players[2]);
+		players[3].tiles = LudoBoard.orderYellowTiles(players[3]);
+		
+		
 		
 		// Creates the HBox with button and text area to roll dice
 		HBox diceBar = new HBox();
@@ -115,11 +120,16 @@ public class LudoEngine extends Application {
 		gameBoard.add(diceBar, 1, 3); // adds nodes to gameBoard
 		
 		
-		
+		System.out.print(players[0].name);
 		
 		gameBoard.add(LudoBoard.createFinalPane(players), 1, 1);
 		
 		bdrPane.getChildren().add(gameBoard);
+		
+		
+		// Testing pawn movement
+		
+		players[0].startPawn();
 		
 		Scene scene = new Scene(bdrPane);
 		// sets scene 
