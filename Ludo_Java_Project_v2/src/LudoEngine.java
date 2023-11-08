@@ -104,7 +104,7 @@ public class LudoEngine extends Application {
 		// Event Handler for dice button
 		btnDice.setOnAction(e->
 		{
-			   int diceRoll = rand.nextInt(6) + 1;
+			   int diceRoll = rand.nextInt(6) + 1; //Fixed: Dice now rolls 1-6
             rollOutput.setText(Integer.toString(diceRoll));
 		});
 		
@@ -123,8 +123,8 @@ public class LudoEngine extends Application {
 		// sets scene 
 		stage.setTitle("Ludo");
 		stage.setScene(scene);
-		stage.setWidth(1580);
-		stage.setHeight(720);
+		stage.setWidth(1500);
+		stage.setHeight(850);
 		stage.show();
 		
 		
