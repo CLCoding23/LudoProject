@@ -27,6 +27,7 @@ import javafx.stage.Stage;
 public class LudoEngine extends Application {
 	@Override
 	public void start(Stage stage) {
+      
 		// Initializes players array in main class
 		Team[] players = new Team[4];
 		
@@ -46,15 +47,13 @@ public class LudoEngine extends Application {
 		
 		for(int i = 0; i < 4; i++)
 		{
-			
-			
 			// Creates circle object where pawns are first placed
-			Circle pawnSpawn = new Circle(90, 90, 90);
+			Circle pawnSpawn = new Circle(100, 100, 100);
 			for(int j = 0; j < 4; j++)
 			{
 				// Creates 4 pawns for each team, and puts them in the players pawns array
 				int playerPos[] = {i, j};
-				players[i].pawns[j] = new Pawn(i, j, playerPos, 30f, players[i].color);
+				players[i].pawns[j] = new Pawn(i, j, playerPos, 35f, players[i].color);
 			}
 			
 			// Adds pawns to respective stackpanes
@@ -85,18 +84,11 @@ public class LudoEngine extends Application {
 		gameBoard.add(stack3, 2, 2);
 		gameBoard.add(stack4,  2,  0);
 		
-		// addds the tiles needed for pawns to move on to the game board
+		// adds the tiles needed for pawns to move on to the game board
 		gameBoard.add(players[0].tilePane,  0, 1);
 		gameBoard.add(players[1].tilePane,  1, 2);
 		gameBoard.add(players[2].tilePane,  2, 1);
 		gameBoard.add(players[3].tilePane,  1, 0);
-		
-		players[0].tiles = LudoBoard.orderBlueTiles(players[0]);
-		players[1].tiles = LudoBoard.orderYellowTiles(players[1]);
-		players[2].tiles = LudoBoard.orderYellowTiles(players[2]);
-		players[3].tiles = LudoBoard.orderYellowTiles(players[3]);
-		
-		
 		
 		// Creates the HBox with button and text area to roll dice
 		HBox diceBar = new HBox();
@@ -112,7 +104,8 @@ public class LudoEngine extends Application {
 		// Event Handler for dice button
 		btnDice.setOnAction(e->
 		{
-			rollOutput.setText(Integer.toString(rand.nextInt(6)));
+			   int diceRoll = rand.nextInt(6) + 1; //Fixed: Dice now rolls 1-6
+            rollOutput.setText(Integer.toString(diceRoll));
 		});
 		
 		
@@ -120,16 +113,11 @@ public class LudoEngine extends Application {
 		gameBoard.add(diceBar, 1, 3); // adds nodes to gameBoard
 		
 		
-		System.out.print(players[0].name);
+		
 		
 		gameBoard.add(LudoBoard.createFinalPane(players), 1, 1);
 		
 		bdrPane.getChildren().add(gameBoard);
-		
-		
-		// Testing pawn movement
-		
-		players[0].startPawn();
 		
 		Scene scene = new Scene(bdrPane);
 		// sets scene 
