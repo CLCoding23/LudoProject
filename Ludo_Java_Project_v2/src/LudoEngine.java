@@ -22,6 +22,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.TriangleMesh;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 public class LudoEngine extends Application {
@@ -126,6 +127,28 @@ public class LudoEngine extends Application {
 		stage.setWidth(1500);
 		stage.setHeight(850);
 		stage.show();
+		
+
+		// Testing starting the pawn and numbering tiles
+		for (int i = 0; i < 4; i++)
+		{
+			players[i].orderTiles();
+			players[i].startPawn();
+			int tileCount = 0;
+			
+			for (StackPane pane : players[i].tiles)
+			{
+				Text tileCountTxt = new Text();
+
+				tileCountTxt.setText(Integer.toString(tileCount));
+				
+				pane.getChildren().add(tileCountTxt);
+				tileCount++;
+				System.out.print(pane + "\n");
+			}
+			
+		}
+		
 		
 		
 	}

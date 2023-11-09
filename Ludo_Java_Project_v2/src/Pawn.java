@@ -24,5 +24,4 @@ class Pawn {
 		return this.pos;
 	}
 	
-	
 }
