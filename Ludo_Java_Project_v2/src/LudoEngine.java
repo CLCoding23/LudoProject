@@ -84,11 +84,11 @@ public class LudoEngine extends Application {
 		gameBoard.add(stack3, 2, 2);
 		gameBoard.add(stack4,  2,  0);
 		
-		// addds the tiles needed for pawns to move on to the game board
-		gameBoard.add(players[0].tiles,  0, 1);
-		gameBoard.add(players[1].tiles,  1, 2);
-		gameBoard.add(players[2].tiles,  2, 1);
-		gameBoard.add(players[3].tiles,  1, 0);
+		// adds the tiles needed for pawns to move on to the game board
+		gameBoard.add(players[0].tilePane,  0, 1);
+		gameBoard.add(players[1].tilePane,  1, 2);
+		gameBoard.add(players[2].tilePane,  2, 1);
+		gameBoard.add(players[3].tilePane,  1, 0);
 		
 		// Creates the HBox with button and text area to roll dice
 		HBox diceBar = new HBox();
