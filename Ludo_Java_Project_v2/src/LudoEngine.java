@@ -9,6 +9,7 @@
 import java.util.Random;
 
 import javafx.application.Application;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -49,40 +50,9 @@ public class LudoEngine extends Application {
 		
 		StackPane[] stacks = {stack1, stack2, stack3, stack4};
 		
-		for(int i = 0; i < 4; i++)
-		{
-			// Creates circle object where pawns are first placed
-			Circle pawnSpawn = new Circle(100, 100, 100);
-			pawnSpawn.setFill(Color.BLANCHEDALMOND);
-			pawnSpawn.setStroke(Color.BLACK);
-			pawnSpawn.setStrokeWidth(2.5);
-			
-			for(int j = 0; j < 4; j++)
-			{
-				// Creates 4 pawns for each team, and puts them in the players pawns array
-				int playerPos[] = {i, j};
-				players[i].pawns[j] = new Pawn(i, j, playerPos, 35, players[i].color);
-				players[i].pawns[j].circle.setStroke(Color.BLACK);
-				players[i].pawns[j].circle.setStrokeWidth(2);			
-			}
-			
-			// Adds pawns to respective stackpanes
-			stacks[i].getChildren().addAll(pawnSpawn, players[i].pawns[0].circle, players[i].pawns[1].circle, players[i].pawns[2].circle, players[i].pawns[3].circle);
-			
-			
-			// Moves the placements of the pawns, so all are displayed separately
-			players[i].pawns[0].circle.setTranslateX(-40.00);
-			players[i].pawns[0].circle.setTranslateY(40.00);
-			
-			players[i].pawns[1].circle.setTranslateX(40.00);
-			players[i].pawns[1].circle.setTranslateY(40.00);
-			
-			players[i].pawns[2].circle.setTranslateX(-40.00);
-			players[i].pawns[2].circle.setTranslateY(-40.00);
-			
-			players[i].pawns[3].circle.setTranslateX(40.00);
-			players[i].pawns[3].circle.setTranslateY(-40.00);
- 
+		LudoBoard.createPawns(players, stacks);
+		for(Pawn pawn : players[2].pawns) {
+			System.out.print(pawn.number);
 		}
 		
 		// Creates the gridpane for the main game board
@@ -117,14 +87,24 @@ public class LudoEngine extends Application {
 		// Event Handler for dice button
 		btnDice.setOnAction(e->
 		{
-			   int diceRoll = rand.nextInt(6) + 1; //Fixed: Dice now rolls 1-6
+		    int diceRoll = rand.nextInt(6) + 1; //Fixed: Dice now rolls 1-6
             rollOutput.setText(Integer.toString(diceRoll));
 		});
 		
 		Button btnMoveBlue = new Button("Move the blue Pawn");
+		btnMoveBlue.setMinSize(100, 50);
+		
+		final Team[] playersCopy = players;
+		
+		/*btnDice.setOnAction((new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	playersCopy[1].pawns[0].setPosition(playersCopy);
+            }
+        }));*/
 		
 		
-		diceBar.getChildren().addAll(btnDice, rollOutput);
+		diceBar.getChildren().addAll(btnDice, rollOutput, btnMoveBlue);
 		gameBoard.add(diceBar, 1, 3); // adds nodes to gameBoard
 		
 		
@@ -149,7 +129,7 @@ public class LudoEngine extends Application {
 		for (int i = 0; i < 4; i++)
 		{
 			players[i].orderTiles();
-			players[i].startPawn();
+			players[i].startPawn(players[i].pawns[0]);
 			int tileCount = 0;
 			
 			for (StackPane pane : players[i].tiles)
@@ -165,9 +145,8 @@ public class LudoEngine extends Application {
 			
 		}
 		
-		
-		
 	}
+	
 	// Main method for launching program
 	public static void main(String[] args) {
 		launch(args);

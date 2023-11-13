@@ -9,6 +9,7 @@ class Team
 {
 	// Initializing class variables
 	String name;
+	int teamId;
 	Color color;
 	GridPane tilePane;
 	StackPane[] tiles;
@@ -16,9 +17,10 @@ class Team
 	Rectangle finalSquare;
 	
 	// Team class constructor method
-	public Team(String name, Color color, GridPane tilePane, StackPane[] tiles)
+	public Team(String name, int teamId, Color color, GridPane tilePane, StackPane[] tiles)
 	{
 		this.name = name;
+		this.teamId = teamId;
 		this.color = color;
 		this.tilePane = tilePane;
 		this.tiles = tiles;
@@ -26,9 +28,9 @@ class Team
 		this.finalSquare = null;
 	}
 	
-	public void startPawn()
+	public void startPawn(Pawn pawn)
 	{
-		this.tiles[8].getChildren().add(this.pawns[0].circle);
+		this.tiles[8].getChildren().add(pawn.circle);
 		this.pawns[0].circle.setRadius(20);
 		this.pawns[0].circle.setTranslateX(0);
 		this.pawns[0].circle.setTranslateY(0);
@@ -37,7 +39,7 @@ class Team
 	
 	public void moveBlue()
 	{
-		System.out.print(this.pawns[0].getPosition());
+		//System.out.print(this.pawns[0].getPosition());
 	}
 	
 	// Returns an array of the players' tilePanes in order of tile movement, order is determined by Team.playername in an if/else statement
@@ -146,6 +148,28 @@ class Team
 		}
 		
 	}
+	
+	// Returns the Pawns position
+		public int[] getPosition()
+		{
+			return this.pawns[0].position;
+		}
+		
+		public int[] setPosition()
+		{
+			int[] pos = this.getPosition();
+			
+			pos[0] = this.teamId;
+			pos[1] = pos[1] + 1;
+			if(pos[1] == 13)
+			{
+				pos[0] = pos[0] + 1; 
+				pos[1] = pos[1] + 1;
+			}
+			//players[pos[0]].tiles[pos[1]].getChildren().add(this.pawns[0].circle);
+			
+			return pos;
+		}
 	
 	
 }

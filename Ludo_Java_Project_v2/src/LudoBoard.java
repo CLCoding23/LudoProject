@@ -34,10 +34,10 @@ class LudoBoard
 		StackPane[] p4Tiles = new StackPane[18];
 		
 		// Creates Team object for each of the 4 players
-		Team player1 = new Team("Player 1", Color.BLUE, p1tilePane, p1Tiles);
-		Team player2 = new Team("Player 2", Color.YELLOW, p2tilePane, p2Tiles);
-		Team player3 = new Team("Player 3", Color.RED, p3tilePane, p3Tiles);
-		Team player4 = new Team("Player 4", Color.GREEN, p4tilePane, p4Tiles);
+		Team player1 = new Team("Player 1", 1, Color.BLUE, p1tilePane, p1Tiles);
+		Team player2 = new Team("Player 2", 2, Color.YELLOW, p2tilePane, p2Tiles);
+		Team player3 = new Team("Player 3", 3, Color.RED, p3tilePane, p3Tiles);
+		Team player4 = new Team("Player 4", 4, Color.GREEN, p4tilePane, p4Tiles);
 		
 		// puts them in an array
 		Team players[] = {player1, player2, player3, player4};
@@ -67,7 +67,7 @@ class LudoBoard
 				for(int k = 0; k < row; k++)
 				{
 					
-					Text pawnCountTxt = new Text();
+					//Text pawnCountTxt = new Text();
 					
 					
 					int[] pos = {j, k};
@@ -121,7 +121,45 @@ class LudoBoard
 		}
 		//returns the players array when the method is called
 		return players;
-	}				
+	}	
+	
+	static public void createPawns(Team[] players, StackPane[] stacks) {
+		for(int i = 0; i < 4; i++)
+		{
+			// Creates circle object where pawns are first placed
+			Circle pawnSpawn = new Circle(100, 100, 100);
+			pawnSpawn.setFill(Color.BLANCHEDALMOND);
+			pawnSpawn.setStroke(Color.BLACK);
+			pawnSpawn.setStrokeWidth(2.5);
+			
+			for(int j = 0; j < 4; j++)
+			{
+				// Creates 4 pawns for each team, and puts them in the players pawns array
+				int[] pawnPos = {players[i].teamId, j};
+				players[i].pawns[j] = new Pawn(i, j, pawnPos, 35, players[i].color);
+				players[i].pawns[j].circle.setStroke(Color.BLACK);
+				players[i].pawns[j].circle.setStrokeWidth(2);			
+			}
+			
+			// Adds pawns to respective stackpanes
+			stacks[i].getChildren().addAll(pawnSpawn, players[i].pawns[0].circle, players[i].pawns[1].circle, players[i].pawns[2].circle, players[i].pawns[3].circle);
+			
+			
+			// Moves the placements of the pawns, so all are displayed separately
+			players[i].pawns[0].circle.setTranslateX(-40.00);
+			players[i].pawns[0].circle.setTranslateY(40.00);
+			
+			players[i].pawns[1].circle.setTranslateX(40.00);
+			players[i].pawns[1].circle.setTranslateY(40.00);
+			
+			players[i].pawns[2].circle.setTranslateX(-40.00);
+			players[i].pawns[2].circle.setTranslateY(-40.00);
+			
+			players[i].pawns[3].circle.setTranslateX(40.00);
+			players[i].pawns[3].circle.setTranslateY(-40.00);
+ 
+		}
+	}
 		
 	
 	// Adds squares for final pawn area
