@@ -32,12 +32,9 @@ import javafx.stage.Stage;
 public class LudoEngine extends Application {
 	@Override
 	public void start(Stage stage) {
-      
-		// Initializes players array in main class
-		Team[] players = new Team[4];
 		
 		// calls the createTiles() method from LudoBoard, creating the tiles that the pawns must travel to finish the game
-		players = LudoBoard.createTiles();
+		Team[] players = LudoBoard.createTiles();
 		
 		BorderPane bdrPane = new BorderPane();
 		
@@ -50,10 +47,8 @@ public class LudoEngine extends Application {
 		
 		StackPane[] stacks = {stack1, stack2, stack3, stack4};
 		
+		// Creates the pawns using information passed, like the players and stacks array
 		LudoBoard.createPawns(players, stacks);
-		for(Pawn pawn : players[2].pawns) {
-			System.out.print(pawn.number);
-		}
 		
 		// Creates the gridpane for the main game board
 		GridPane gameBoard = new GridPane();
@@ -73,15 +68,17 @@ public class LudoEngine extends Application {
 		// Creates the HBox with button and text area to roll dice
 		HBox diceBar = new HBox();
 		
+		//Sets padding for dice bar
 		diceBar.setPadding(new Insets(10));
 		
+		// Creates a button for rolling die
 		Random rand = new Random();
 		Button btnDice = new Button("Roll Dice");
 		btnDice.setMinSize(100, 50);
 		
 		
 		
-		
+		// Text area for die value
 		TextArea rollOutput = new TextArea();
 		
 		// Event Handler for dice button
@@ -91,34 +88,61 @@ public class LudoEngine extends Application {
             rollOutput.setText(Integer.toString(diceRoll));
 		});
 		
+		// Button for testing moving blue pawn
 		Button btnMoveBlue = new Button("Move the blue Pawn");
-		btnMoveBlue.setMinSize(100, 50);
+		btnMoveBlue.setMinSize(100, 50); // Sets button size
 		
-		final Team[] playersCopy = players;
 		
-		/*btnDice.setOnAction((new EventHandler<ActionEvent>() {
+		// Event handler for button, calls the moveBlue() function, and prints the affected pawns position to the console
+		btnMoveBlue.setOnAction((new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
-            	playersCopy[1].pawns[0].setPosition(playersCopy);
+            	players[0].pawns[0].moveBlue(players);
+            	System.out.println(players[0].pawns[0].getPosition());
             }
-        }));*/
+        }));
 		
-		
+		// Adds both buttons and diceOutput text area to diceBar
 		diceBar.getChildren().addAll(btnDice, rollOutput, btnMoveBlue);
 		gameBoard.add(diceBar, 1, 3); // adds nodes to gameBoard
 		
 		
+		// Adds a text output area and formats it to the center of the right sight of the scene
+		TextArea txtOutput = new TextArea();
+		txtOutput.setText("Pick a Pawn!");
+		txtOutput.setMaxSize(450, 350);
+		txtOutput.setTranslateX(-225);
+		txtOutput.setTranslateY(300);
 		
 		
+		// Working on adding selecting a pawn via setOnMouseClicked
+		Pawn selectedPawn;
+		
+		for(Team player : players)
+		{
+			for(Pawn pawn : player.pawns) {
+				pawn.circle.setOnMouseClicked(e -> {
+					Pawn currentPawn = pawn;
+					
+					
+				});
+			}
+		}
+		
+		// Adds the center squares where pawns will stay when completed
 		gameBoard.add(LudoBoard.createFinalPane(players), 1, 1);
 		
+		// Adds the gameBoard to the base bdrPane
 		bdrPane.getChildren().add(gameBoard);
+		
+		// adds txtOutput to the right side of the bdrpane
+		bdrPane.setRight(txtOutput);
 		
 		Scene scene = new Scene(bdrPane);
 		// sets scene 
 		stage.setTitle("Ludo");
 		stage.setScene(scene);
-		//stage.setFullScreen(true);
+		stage.setFullScreen(true);
 		stage.show();
 		Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
 		stage.setX((primScreenBounds.getWidth() - stage.getWidth()) /2);
@@ -140,7 +164,7 @@ public class LudoEngine extends Application {
 				
 				pane.getChildren().add(tileCountTxt);
 				tileCount++;
-				System.out.print(pane + "\n");
+				//System.out.print(pane + "\n");
 			}
 			
 		}

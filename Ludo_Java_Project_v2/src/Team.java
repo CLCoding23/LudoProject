@@ -28,6 +28,7 @@ class Team
 		this.finalSquare = null;
 	}
 	
+	// Gets the first pawn from the player's pawns and places it on it's starting tile
 	public void startPawn(Pawn pawn)
 	{
 		this.tiles[8].getChildren().add(pawn.circle);
@@ -35,11 +36,6 @@ class Team
 		this.pawns[0].circle.setTranslateX(0);
 		this.pawns[0].circle.setTranslateY(0);
 		
-	}
-	
-	public void moveBlue()
-	{
-		//System.out.print(this.pawns[0].getPosition());
 	}
 	
 	// Returns an array of the players' tilePanes in order of tile movement, order is determined by Team.playername in an if/else statement
@@ -148,28 +144,6 @@ class Team
 		}
 		
 	}
-	
-	// Returns the Pawns position
-		public int[] getPosition()
-		{
-			return this.pawns[0].position;
-		}
-		
-		public int[] setPosition()
-		{
-			int[] pos = this.getPosition();
-			
-			pos[0] = this.teamId;
-			pos[1] = pos[1] + 1;
-			if(pos[1] == 13)
-			{
-				pos[0] = pos[0] + 1; 
-				pos[1] = pos[1] + 1;
-			}
-			//players[pos[0]].tiles[pos[1]].getChildren().add(this.pawns[0].circle);
-			
-			return pos;
-		}
 	
 	
 }

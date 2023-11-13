@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 
 class LudoBoard 
 {
+	//Creates the tiles and player objects, return them to caller method
 	static public Team[] createTiles()
 	{
 		
@@ -35,9 +36,9 @@ class LudoBoard
 		
 		// Creates Team object for each of the 4 players
 		Team player1 = new Team("Player 1", 1, Color.BLUE, p1tilePane, p1Tiles);
-		Team player2 = new Team("Player 2", 2, Color.YELLOW, p2tilePane, p2Tiles);
+		Team player2 = new Team("Player 2", 2, Color.GREEN, p2tilePane, p2Tiles);
 		Team player3 = new Team("Player 3", 3, Color.RED, p3tilePane, p3Tiles);
-		Team player4 = new Team("Player 4", 4, Color.GREEN, p4tilePane, p4Tiles);
+		Team player4 = new Team("Player 4", 4, Color.YELLOW, p4tilePane, p4Tiles);
 		
 		// puts them in an array
 		Team players[] = {player1, player2, player3, player4};
@@ -75,8 +76,11 @@ class LudoBoard
 					// Create stackpane for tile and add it to player object
 					StackPane stackTile = new StackPane();
 					players[i].tiles[pawnCount] = stackTile;
+					
+					// Rectangle object representing tile
 					Rectangle square = new Rectangle(40f, 40f);
 					stackTile.getChildren().add(square);
+					
 					Tile gameTile = new Tile(players[i].name, stackTile, pos, false);
 					// If statement to determine starting tilePane, and colors them accordingly
 					if(i == 0 && j == 1 && k == 0 || i == 1 && j == 0 && k == 4 || i == 2 && j == 4 && k == 2 || i == 3 && j == 2 && k == 1)
@@ -165,9 +169,12 @@ class LudoBoard
 	// Adds squares for final pawn area
 	static public GridPane createFinalPane(Team[] players)
 	{
+		// Creates gridPane to place final squares
 		GridPane finalGrid = new GridPane();
 		//finalGrid.setPadding(new Insets(0));
 		
+		
+		// Creates, places, and formats final squares
 		for(int i = 0; i < players.length; i++)
 		{
 			Rectangle finalSquare = new Rectangle(75, 75);
@@ -184,6 +191,7 @@ class LudoBoard
 			finalSquare.setFill(players[i].color);
 			players[i].finalSquare = finalSquare;
 		}
+		// Places final squares in gridPane
 		finalGrid.add(players[0].finalSquare, 0, 1);
 		finalGrid.add(players[1].finalSquare, 1, 2);
 		finalGrid.add(players[2].finalSquare, 2, 1);
