@@ -9,8 +9,10 @@
 import java.util.Random;
 
 import javafx.application.Application;
+import javafx.event.EventHandler;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.geometry.Rectangle2D;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
@@ -23,6 +25,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Circle;
 import javafx.scene.shape.TriangleMesh;
 import javafx.scene.text.Text;
+import javafx.stage.Screen;
 import javafx.stage.Stage;
 
 public class LudoEngine extends Application {
@@ -50,11 +53,15 @@ public class LudoEngine extends Application {
 		{
 			// Creates circle object where pawns are first placed
 			Circle pawnSpawn = new Circle(100, 100, 100);
+			pawnSpawn.setFill(Color.BLANCHEDALMOND);
+			pawnSpawn.setStroke(Color.BLACK);
+			pawnSpawn.setStrokeWidth(2.5);
+			
 			for(int j = 0; j < 4; j++)
 			{
 				// Creates 4 pawns for each team, and puts them in the players pawns array
 				int playerPos[] = {i, j};
-				players[i].pawns[j] = new Pawn(i, j, playerPos, 20f, players[i].color);
+				players[i].pawns[j] = new Pawn(i, j, playerPos, 35, players[i].color);
 				players[i].pawns[j].circle.setStroke(Color.BLACK);
 				players[i].pawns[j].circle.setStrokeWidth(2);			
 			}
@@ -96,8 +103,11 @@ public class LudoEngine extends Application {
 		// Creates the HBox with button and text area to roll dice
 		HBox diceBar = new HBox();
 		
+		diceBar.setPadding(new Insets(10));
+		
 		Random rand = new Random();
 		Button btnDice = new Button("Roll Dice");
+		btnDice.setMinSize(100, 50);
 		
 		
 		
@@ -110,6 +120,8 @@ public class LudoEngine extends Application {
 			   int diceRoll = rand.nextInt(6) + 1; //Fixed: Dice now rolls 1-6
             rollOutput.setText(Integer.toString(diceRoll));
 		});
+		
+		Button btnMoveBlue = new Button("Move the blue Pawn");
 		
 		
 		diceBar.getChildren().addAll(btnDice, rollOutput);
@@ -126,9 +138,11 @@ public class LudoEngine extends Application {
 		// sets scene 
 		stage.setTitle("Ludo");
 		stage.setScene(scene);
-		stage.setWidth(1500);
-		stage.setHeight(850);
+		//stage.setFullScreen(true);
 		stage.show();
+		Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+		stage.setX((primScreenBounds.getWidth() - stage.getWidth()) /2);
+		stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 2);
 		
 
 		// Testing starting the pawn and numbering tiles

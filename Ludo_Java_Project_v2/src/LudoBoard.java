@@ -75,7 +75,7 @@ class LudoBoard
 					// Create stackpane for tile and add it to player object
 					StackPane stackTile = new StackPane();
 					players[i].tiles[pawnCount] = stackTile;
-					Rectangle square = new Rectangle(32.5f, 32.5f);
+					Rectangle square = new Rectangle(40f, 40f);
 					stackTile.getChildren().add(square);
 					Tile gameTile = new Tile(players[i].name, stackTile, pos, false);
 					// If statement to determine starting tilePane, and colors them accordingly
@@ -89,7 +89,7 @@ class LudoBoard
 					}
 					else 
 					{ 
-						square.setFill(Color.GREY); 
+						square.setFill(Color.CORNFLOWERBLUE); 
 					}
 					
 					square.setStroke(players[i].color);
@@ -128,9 +128,21 @@ class LudoBoard
 	static public GridPane createFinalPane(Team[] players)
 	{
 		GridPane finalGrid = new GridPane();
+		//finalGrid.setPadding(new Insets(0));
+		
 		for(int i = 0; i < players.length; i++)
 		{
 			Rectangle finalSquare = new Rectangle(75, 75);
+			
+			//Adds border to final Panes
+			finalSquare.setStroke(Color.BLACK);
+			finalSquare.setStrokeWidth(2.5);
+			
+			finalSquare.setRotate(45);
+			if(i == 0) finalSquare.setTranslateX(20);
+			if(i == 1) finalSquare.setTranslateY(-20);
+			if(i == 2) finalSquare.setTranslateX(-20);
+			if(i == 3) finalSquare.setTranslateY(20);
 			finalSquare.setFill(players[i].color);
 			players[i].finalSquare = finalSquare;
 		}
