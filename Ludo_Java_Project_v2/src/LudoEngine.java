@@ -54,7 +54,9 @@ public class LudoEngine extends Application {
 			{
 				// Creates 4 pawns for each team, and puts them in the players pawns array
 				int playerPos[] = {i, j};
-				players[i].pawns[j] = new Pawn(i, j, playerPos, 35f, players[i].color);
+				players[i].pawns[j] = new Pawn(i, j, playerPos, 20f, players[i].color);
+				players[i].pawns[j].circle.setStroke(Color.BLACK);
+				players[i].pawns[j].circle.setStrokeWidth(2);			
 			}
 			
 			// Adds pawns to respective stackpanes

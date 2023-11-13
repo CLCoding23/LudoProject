@@ -28,7 +28,10 @@ class Team
 	
 	public void startPawn()
 	{
-		this.tiles[1].getChildren().add(this.pawns[0].circle);
+		this.tiles[8].getChildren().add(this.pawns[0].circle);
+		this.pawns[0].circle.setTranslateX(0);
+		this.pawns[0].circle.setTranslateY(0);
+		
 	}
 	
 	// Returns an array of the players' tilePanes in order of tile movement, order is determined by Team.playername in an if/else statement
