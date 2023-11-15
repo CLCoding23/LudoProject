@@ -6,6 +6,8 @@
  */
 
 // Import needed classes
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import javafx.application.Application;
@@ -89,21 +91,12 @@ public class LudoEngine extends Application {
 		});
 		
 		// Button for testing moving blue pawn
-		Button btnMoveBlue = new Button("Move the blue Pawn");
-		btnMoveBlue.setMinSize(100, 50); // Sets button size
+		Button btnMove = new Button("Move the blue Pawn");
+		btnMove.setMinSize(100, 50); // Sets button size
 		
-		
-		// Event handler for button, calls the moveBlue() function, and prints the affected pawns position to the console
-		btnMoveBlue.setOnAction((new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-            	players[0].pawns[0].moveBlue(players);
-            	System.out.println(players[0].pawns[0].getPosition());
-            }
-        }));
 		
 		// Adds both buttons and diceOutput text area to diceBar
-		diceBar.getChildren().addAll(btnDice, rollOutput, btnMoveBlue);
+		diceBar.getChildren().addAll(btnDice, rollOutput, btnMove);
 		gameBoard.add(diceBar, 1, 3); // adds nodes to gameBoard
 		
 		
@@ -114,20 +107,66 @@ public class LudoEngine extends Application {
 		txtOutput.setTranslateX(-225);
 		txtOutput.setTranslateY(300);
 		
-		
-		// Working on adding selecting a pawn via setOnMouseClicked
-		Pawn selectedPawn;
+		List<Pawn> pawnList = new ArrayList<Pawn>();
 		
 		for(Team player : players)
 		{
 			for(Pawn pawn : player.pawns) {
 				pawn.circle.setOnMouseClicked(e -> {
-					Pawn currentPawn = pawn;
-					
-					
+					txtOutput.setText("You have chosen pawn " + pawn.number + " of team " + pawn.team );
+					Pawn selectPawn = pawn;
+					if(pawnList.isEmpty()) 
+					{
+						pawnList.add(selectPawn);
+						for(Pawn jiffypawn : pawnList)
+						{
+							System.out.println(jiffypawn.number);
+						}
+					}
+					else
+					{
+						pawnList.remove(0);
+						pawnList.add(selectPawn);
+						for(Pawn jiffypawn : pawnList)
+						{
+							System.out.println(jiffypawn.number);
+						}
+					}
 				});
 			}
 		}
+		
+		// Event handler for button, calls the moveBlue() function, and prints the affected pawns position to the console
+		btnMove.setOnAction((new EventHandler<ActionEvent>() {
+            @Override
+            public void handle(ActionEvent event) {
+            	
+            	Pawn pawn = new Pawn();
+            	try
+            	{
+            		pawn = pawnList.get(0);
+            	}
+            	catch(Exception e)
+            	{
+            		txtOutput.setText("Error: " + e.toString() + "\n"
+            						 + "Please pick a pawn!");
+            	}
+            	
+            	// If the pawn is at the spawnpoint, move it to the tile board
+            	if (pawnList.get(0).started == false) 
+            	{ 
+            		pawn.startPawn(players[pawn.team]);
+            		pawn.started = true;
+            		int[] pawnPos = pawn.getPosition();
+            		txtOutput.setText(pawnPos[0] + " " + pawnPos[1]);
+            	}
+            	// if it has started, move it however many tiles
+            	else 
+            	{
+            		pawn.setPosition(players);
+            	}
+            }
+        }));
 		
 		// Adds the center squares where pawns will stay when completed
 		gameBoard.add(LudoBoard.createFinalPane(players), 1, 1);
@@ -153,7 +192,7 @@ public class LudoEngine extends Application {
 		for (int i = 0; i < 4; i++)
 		{
 			players[i].orderTiles();
-			players[i].startPawn(players[i].pawns[0]);
+			//players[i].startPawn(players[i].pawns[0]);
 			int tileCount = 0;
 			
 			for (StackPane pane : players[i].tiles)

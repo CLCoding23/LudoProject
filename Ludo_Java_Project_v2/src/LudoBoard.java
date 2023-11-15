@@ -139,8 +139,8 @@ class LudoBoard
 			for(int j = 0; j < 4; j++)
 			{
 				// Creates 4 pawns for each team, and puts them in the players pawns array
-				int[] pawnPos = {players[i].teamId, j};
-				players[i].pawns[j] = new Pawn(i, j, pawnPos, 35, players[i].color);
+				int[] pawnPos = {players[i].teamId, j + 1};
+				players[i].pawns[j] = new Pawn(i, j + 1, pawnPos, 35, players[i].color);
 				players[i].pawns[j].circle.setStroke(Color.BLACK);
 				players[i].pawns[j].circle.setStrokeWidth(2);			
 			}
