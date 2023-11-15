@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 
 class LudoBoard 
 {
+	//Creates the tiles and player objects, return them to caller method
 	static public Team[] createTiles()
 	{
 		
@@ -34,10 +35,10 @@ class LudoBoard
 		StackPane[] p4Tiles = new StackPane[18];
 		
 		// Creates Team object for each of the 4 players
-		Team player1 = new Team("Player 1", Color.BLUE, p1tilePane, p1Tiles);
-		Team player2 = new Team("Player 2", Color.YELLOW, p2tilePane, p2Tiles);
-		Team player3 = new Team("Player 3", Color.RED, p3tilePane, p3Tiles);
-		Team player4 = new Team("Player 4", Color.GREEN, p4tilePane, p4Tiles);
+		Team player1 = new Team("Player 1", 1, Color.BLUE, p1tilePane, p1Tiles);
+		Team player2 = new Team("Player 2", 2, Color.GREEN, p2tilePane, p2Tiles);
+		Team player3 = new Team("Player 3", 3, Color.RED, p3tilePane, p3Tiles);
+		Team player4 = new Team("Player 4", 4, Color.YELLOW, p4tilePane, p4Tiles);
 		
 		// puts them in an array
 		Team players[] = {player1, player2, player3, player4};
@@ -67,7 +68,7 @@ class LudoBoard
 				for(int k = 0; k < row; k++)
 				{
 					
-					Text pawnCountTxt = new Text();
+					//Text pawnCountTxt = new Text();
 					
 					
 					int[] pos = {j, k};
@@ -75,8 +76,11 @@ class LudoBoard
 					// Create stackpane for tile and add it to player object
 					StackPane stackTile = new StackPane();
 					players[i].tiles[pawnCount] = stackTile;
-					Rectangle square = new Rectangle(32.5f, 32.5f);
+					
+					// Rectangle object representing tile
+					Rectangle square = new Rectangle(40f, 40f);
 					stackTile.getChildren().add(square);
+					
 					Tile gameTile = new Tile(players[i].name, stackTile, pos, false);
 					// If statement to determine starting tilePane, and colors them accordingly
 					if(i == 0 && j == 1 && k == 0 || i == 1 && j == 0 && k == 4 || i == 2 && j == 4 && k == 2 || i == 3 && j == 2 && k == 1)
@@ -89,7 +93,7 @@ class LudoBoard
 					}
 					else 
 					{ 
-						square.setFill(Color.GREY); 
+						square.setFill(Color.CORNFLOWERBLUE); 
 					}
 					
 					square.setStroke(players[i].color);
@@ -121,19 +125,73 @@ class LudoBoard
 		}
 		//returns the players array when the method is called
 		return players;
-	}				
+	}	
+	
+	static public void createPawns(Team[] players, StackPane[] stacks) {
+		for(int i = 0; i < 4; i++)
+		{
+			// Creates circle object where pawns are first placed
+			Circle pawnSpawn = new Circle(100, 100, 100);
+			pawnSpawn.setFill(Color.BLANCHEDALMOND);
+			pawnSpawn.setStroke(Color.BLACK);
+			pawnSpawn.setStrokeWidth(2.5);
+			
+			for(int j = 0; j < 4; j++)
+			{
+				// Creates 4 pawns for each team, and puts them in the players pawns array
+				int[] pawnPos = {players[i].teamId, j + 1};
+				players[i].pawns[j] = new Pawn(i, j + 1, pawnPos, 35, players[i].color);
+				players[i].pawns[j].circle.setStroke(Color.BLACK);
+				players[i].pawns[j].circle.setStrokeWidth(2);			
+			}
+			
+			// Adds pawns to respective stackpanes
+			stacks[i].getChildren().addAll(pawnSpawn, players[i].pawns[0].circle, players[i].pawns[1].circle, players[i].pawns[2].circle, players[i].pawns[3].circle);
+			
+			
+			// Moves the placements of the pawns, so all are displayed separately
+			players[i].pawns[0].circle.setTranslateX(-40.00);
+			players[i].pawns[0].circle.setTranslateY(40.00);
+			
+			players[i].pawns[1].circle.setTranslateX(40.00);
+			players[i].pawns[1].circle.setTranslateY(40.00);
+			
+			players[i].pawns[2].circle.setTranslateX(-40.00);
+			players[i].pawns[2].circle.setTranslateY(-40.00);
+			
+			players[i].pawns[3].circle.setTranslateX(40.00);
+			players[i].pawns[3].circle.setTranslateY(-40.00);
+ 
+		}
+	}
 		
 	
 	// Adds squares for final pawn area
 	static public GridPane createFinalPane(Team[] players)
 	{
+		// Creates gridPane to place final squares
 		GridPane finalGrid = new GridPane();
+		//finalGrid.setPadding(new Insets(0));
+		
+		
+		// Creates, places, and formats final squares
 		for(int i = 0; i < players.length; i++)
 		{
 			Rectangle finalSquare = new Rectangle(75, 75);
+			
+			//Adds border to final Panes
+			finalSquare.setStroke(Color.BLACK);
+			finalSquare.setStrokeWidth(2.5);
+			
+			finalSquare.setRotate(45);
+			if(i == 0) finalSquare.setTranslateX(20);
+			if(i == 1) finalSquare.setTranslateY(-20);
+			if(i == 2) finalSquare.setTranslateX(-20);
+			if(i == 3) finalSquare.setTranslateY(20);
 			finalSquare.setFill(players[i].color);
 			players[i].finalSquare = finalSquare;
 		}
+		// Places final squares in gridPane
 		finalGrid.add(players[0].finalSquare, 0, 1);
 		finalGrid.add(players[1].finalSquare, 1, 2);
 		finalGrid.add(players[2].finalSquare, 2, 1);
