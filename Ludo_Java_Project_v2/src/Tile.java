@@ -1,5 +1,6 @@
 import javafx.scene.layout.StackPane;
 
+//Possibly extend stackpane
 class Tile 
 {
 	
