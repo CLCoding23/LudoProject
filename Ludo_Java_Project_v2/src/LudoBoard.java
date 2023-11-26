@@ -17,10 +17,12 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 class LudoBoard 
-{
+{	
 	//Creates the tiles and player objects, return them to caller method
-	static public Team[] createTiles()
+	public Team[] createTiles()
 	{
+		StackPane[] tilesArray = new StackPane[72];
+		int tileCount = 0;
 		
 		// Initialize Gridpanes for tilePane
 		GridPane p1tilePane = new GridPane();
@@ -74,14 +76,19 @@ class LudoBoard
 					int[] pos = {j, k};
 					
 					// Create stackpane for tile and add it to player object
-					StackPane stackTile = new StackPane();
-					players[i].tiles[pawnCount] = stackTile;
+					//StackPane stackTile = new StackPane();
+					
+					
+					// Creates a gameTile object that is used for pawn movement
+					Tile gameTile = new Tile(players[i].name, pos, false);
 					
 					// Rectangle object representing tile
 					Rectangle square = new Rectangle(40f, 40f);
-					stackTile.getChildren().add(square);
+					gameTile.getChildren().add(square);
 					
-					Tile gameTile = new Tile(players[i].name, stackTile, pos, false);
+					
+					players[i].tiles[pawnCount] = gameTile;
+					
 					// If statement to determine starting tilePane, and colors them accordingly
 					if(i == 0 && j == 1 && k == 0 || i == 1 && j == 0 && k == 4 || i == 2 && j == 4 && k == 2 || i == 3 && j == 2 && k == 1)
 					{
@@ -105,7 +112,7 @@ class LudoBoard
 					players[i].tilePane.setVgap(4);
 					
 					//adds the tile to the players gameTile gridpane
-					players[i].tilePane.add(stackTile, j,  k);
+					players[i].tilePane.add(gameTile, j,  k);
 					
 					/*pawnCountTxt.setText(Integer.toString(pawnCount));
 					try
@@ -140,27 +147,29 @@ class LudoBoard
 			{
 				// Creates 4 pawns for each team, and puts them in the players pawns array
 				int[] pawnPos = {players[i].teamId, j + 1};
-				players[i].pawns[j] = new Pawn(i, j + 1, pawnPos, 35, players[i].color);
-				players[i].pawns[j].circle.setStroke(Color.BLACK);
-				players[i].pawns[j].circle.setStrokeWidth(2);			
+				players[i].pawns[j] = new Pawn(i, j + 1, pawnPos);
+				players[i].pawns[j].setRadius(35f);
+				players[i].pawns[j].setFill(players[i].color);
+				players[i].pawns[j].setStroke(Color.BLACK);
+				players[i].pawns[j].setStrokeWidth(2);			
 			}
 			
 			// Adds pawns to respective stackpanes
-			stacks[i].getChildren().addAll(pawnSpawn, players[i].pawns[0].circle, players[i].pawns[1].circle, players[i].pawns[2].circle, players[i].pawns[3].circle);
+			stacks[i].getChildren().addAll(pawnSpawn, players[i].pawns[0], players[i].pawns[1], players[i].pawns[2], players[i].pawns[3]);
 			
 			
 			// Moves the placements of the pawns, so all are displayed separately
-			players[i].pawns[0].circle.setTranslateX(-40.00);
-			players[i].pawns[0].circle.setTranslateY(40.00);
+			players[i].pawns[0].setTranslateX(-40.00);
+			players[i].pawns[0].setTranslateY(40.00);
 			
-			players[i].pawns[1].circle.setTranslateX(40.00);
-			players[i].pawns[1].circle.setTranslateY(40.00);
+			players[i].pawns[1].setTranslateX(40.00);
+			players[i].pawns[1].setTranslateY(40.00);
 			
-			players[i].pawns[2].circle.setTranslateX(-40.00);
-			players[i].pawns[2].circle.setTranslateY(-40.00);
+			players[i].pawns[2].setTranslateX(-40.00);
+			players[i].pawns[2].setTranslateY(-40.00);
 			
-			players[i].pawns[3].circle.setTranslateX(40.00);
-			players[i].pawns[3].circle.setTranslateY(-40.00);
+			players[i].pawns[3].setTranslateX(40.00);
+			players[i].pawns[3].setTranslateY(-40.00);
  
 		}
 	}
@@ -199,7 +208,6 @@ class LudoBoard
 		
 		return finalGrid;
 	}
-		
 	
 }
 

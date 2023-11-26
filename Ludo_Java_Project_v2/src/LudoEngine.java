@@ -35,8 +35,11 @@ public class LudoEngine extends Application {
 	@Override
 	public void start(Stage stage) {
 		
+		LudoBoard ludoBoard = new LudoBoard();
+		
+		
 		// calls the createTiles() method from LudoBoard, creating the tiles that the pawns must travel to finish the game
-		Team[] players = LudoBoard.createTiles();
+		Team[] players = ludoBoard.createTiles();
 		
 		BorderPane bdrPane = new BorderPane();
 		
@@ -91,7 +94,7 @@ public class LudoEngine extends Application {
 		});
 		
 		// Button for testing moving blue pawn
-		Button btnMove = new Button("Move the blue Pawn");
+		Button btnMove = new Button("Move Pawn");
 		btnMove.setMinSize(100, 50); // Sets button size
 		
 		
@@ -112,12 +115,11 @@ public class LudoEngine extends Application {
 		for(Team player : players)
 		{
 			for(Pawn pawn : player.pawns) {
-				pawn.circle.setOnMouseClicked(e -> {
+				pawn.setOnMouseClicked(e -> {
 					txtOutput.setText("You have chosen pawn " + pawn.number + " of team " + pawn.team );
-					Pawn selectPawn = pawn;
 					if(pawnList.isEmpty()) 
 					{
-						pawnList.add(selectPawn);
+						pawnList.add(pawn);
 						for(Pawn jiffypawn : pawnList)
 						{
 							System.out.println(jiffypawn.number);
@@ -126,7 +128,7 @@ public class LudoEngine extends Application {
 					else
 					{
 						pawnList.remove(0);
-						pawnList.add(selectPawn);
+						pawnList.add(pawn);
 						for(Pawn jiffypawn : pawnList)
 						{
 							System.out.println(jiffypawn.number);
@@ -153,12 +155,12 @@ public class LudoEngine extends Application {
             	}
             	
             	// If the pawn is at the spawnpoint, move it to the tile board
-            	if (pawnList.get(0).started == false) 
+            	if (pawn.started == false) 
             	{ 
             		pawn.startPawn(players[pawn.team]);
             		pawn.started = true;
             		int[] pawnPos = pawn.getPosition();
-            		txtOutput.setText(pawnPos[0] + " " + pawnPos[1]);
+            		txtOutput.setText("The pawn is at" + pawnPos[0] + " " + pawnPos[1]);
             	}
             	// if it has started, move it however many tiles
             	else 

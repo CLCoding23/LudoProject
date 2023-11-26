@@ -41,6 +41,7 @@ class Team
 	// Returns an array of the players' tilePanes in order of tile movement, order is determined by Team.playername in an if/else statement
 	public StackPane[] orderTiles()
 	{
+		
 		StackPane[] tilePaneRef = new StackPane[18];
 		System.arraycopy(this.tiles, 0, tilePaneRef, 0, 18);
 		if(this.name == "Player 1")
