@@ -10,6 +10,8 @@ class Pawn extends Circle {
 	boolean started;
 	int[] position;
 	int tilesMoved = 0;
+	int areasPassed = 0;
+	boolean finalStretch = false;
 	
 	public Pawn() {} //base constructor
 	
@@ -28,12 +30,13 @@ class Pawn extends Circle {
 		player.tiles[8].getChildren().add(this);
 		
 		// Sets player position
-		this.position[0] = player.teamId;
+		this.position[0] = player.teamId - 1;
 		this.position[1] = 8;
 		this.setRadius(20);
 		this.setTranslateX(0);
 		this.setTranslateY(0);
 		
+		this.started = true;
 	}
 		
 	// Returns the Pawns position
@@ -50,8 +53,14 @@ class Pawn extends Circle {
 		
 		// Sets the pawns position to the next tile ahead
 		this.position[1] = posCopy[1] + 1;
+		
+		//Tracking number of tiles crossed to know when to finish
+		this.tilesMoved++;
+		
 		if(this.position[1] == 13) //Changes to the next tile board if it hits 13
 		{
+			this.areasPassed++;
+			
 			// Attempts to update the tile board position, resets to 3 if at 0
 			try
 			{
@@ -73,8 +82,27 @@ class Pawn extends Circle {
 			System.out.println(this.position[0]);
 			players[this.position[0]].tiles[this.position[1]].getChildren().add(this);
 		}
-		else if(this.tilesMoved == 48)
+		else if(this.tilesMoved == 48 && this.areasPassed == 4)
 		{
+			if (this.finalStretch == true) 
+			{
+				try
+				{
+					players[this.position[0]].tiles[this.position[1]].getChildren().add(this);
+				}
+				catch(ArrayIndexOutOfBoundsException e)
+				{
+					//ludoBoard
+				}
+			}
+			else 
+			{
+				this.position[1] = 14;
+				
+				players[this.position[0]].tiles[this.position[1]].getChildren().add(this);
+				
+				this.finalStretch = true;
+			}
 			
 		}
 		else
@@ -83,10 +111,10 @@ class Pawn extends Circle {
 		}
 	}
 			
-			//Method testing blue pawn movement
-			public void movePawn(Team[] players)
-			{
-				this.setPosition(players);
-				System.out.print(this.getPosition());
-			}
+	//Method testing blue pawn movement
+	public void movePawn(Team[] players)
+	{
+		this.setPosition(players);
+		System.out.print(this.getPosition());
+	}
 }

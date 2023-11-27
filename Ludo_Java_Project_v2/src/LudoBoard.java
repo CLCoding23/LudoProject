@@ -176,35 +176,36 @@ class LudoBoard
 		
 	
 	// Adds squares for final pawn area
-	static public GridPane createFinalPane(Team[] players)
+	public GridPane createFinalPane(Team[] players)
 	{
 		// Creates gridPane to place final squares
 		GridPane finalGrid = new GridPane();
 		//finalGrid.setPadding(new Insets(0));
-		
 		
 		// Creates, places, and formats final squares
 		for(int i = 0; i < players.length; i++)
 		{
 			Rectangle finalSquare = new Rectangle(75, 75);
 			
+			BorderPane borderPane = new BorderPane();
+			
 			//Adds border to final Panes
 			finalSquare.setStroke(Color.BLACK);
 			finalSquare.setStrokeWidth(2.5);
 			
 			finalSquare.setRotate(45);
-			if(i == 0) finalSquare.setTranslateX(20);
-			if(i == 1) finalSquare.setTranslateY(-20);
-			if(i == 2) finalSquare.setTranslateX(-20);
-			if(i == 3) finalSquare.setTranslateY(20);
+			if(i == 0) borderPane.setStyle("-fx-background-color: #FF0000;");
+			if(i == 1) borderPane.setStyle("-fx-background-color: #C0C0C0;");
+			if(i == 2) borderPane.setStyle("-fx-background-color: #C0C0C0;");
+			if(i == 3) borderPane.setStyle("-fx-background-color: #C0C0C0;");
 			finalSquare.setFill(players[i].color);
-			players[i].finalSquare = finalSquare;
+			players[i].finalBorder = borderPane;
 		}
 		// Places final squares in gridPane
-		finalGrid.add(players[0].finalSquare, 0, 1);
-		finalGrid.add(players[1].finalSquare, 1, 2);
-		finalGrid.add(players[2].finalSquare, 2, 1);
-		finalGrid.add(players[3].finalSquare, 1, 0);
+		finalGrid.add(players[0].finalBorder, 0, 0);
+		finalGrid.add(players[1].finalBorder, 1, 1);
+		finalGrid.add(players[2].finalBorder, 0, 1);
+		finalGrid.add(players[3].finalBorder, 1, 0);
 		
 		return finalGrid;
 	}

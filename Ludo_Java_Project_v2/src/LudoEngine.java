@@ -158,9 +158,9 @@ public class LudoEngine extends Application {
             	if (pawn.started == false) 
             	{ 
             		pawn.startPawn(players[pawn.team]);
-            		pawn.started = true;
+            		
             		int[] pawnPos = pawn.getPosition();
-            		txtOutput.setText("The pawn is at" + pawnPos[0] + " " + pawnPos[1]);
+            		txtOutput.setText("The pawn is at Tile Area " + pawnPos[0] + " Tile " + pawnPos[1]);
             	}
             	// if it has started, move it however many tiles
             	else 
@@ -171,7 +171,8 @@ public class LudoEngine extends Application {
         }));
 		
 		// Adds the center squares where pawns will stay when completed
-		gameBoard.add(LudoBoard.createFinalPane(players), 1, 1);
+		gameBoard.add(ludoBoard.createFinalPane(players), 1, 1);
+		
 		
 		// Adds the gameBoard to the base bdrPane
 		bdrPane.getChildren().add(gameBoard);
@@ -182,12 +183,15 @@ public class LudoEngine extends Application {
 		Scene scene = new Scene(bdrPane);
 		// sets scene 
 		stage.setTitle("Ludo");
+		
+		
+		
 		stage.setScene(scene);
 		stage.setFullScreen(true);
 		stage.show();
-		Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+		/*Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
 		stage.setX((primScreenBounds.getWidth() - stage.getWidth()) /2);
-		stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 2);
+		stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 2);*/
 		
 
 		// Testing starting the pawn and numbering tiles

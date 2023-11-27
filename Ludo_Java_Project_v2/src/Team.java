@@ -1,5 +1,6 @@
 import java.lang.reflect.Array;
 
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -14,7 +15,7 @@ class Team
 	GridPane tilePane;
 	StackPane[] tiles;
 	Pawn[] pawns;
-	Rectangle finalSquare;
+	BorderPane finalBorder;
 	
 	// Team class constructor method
 	public Team(String name, int teamId, Color color, GridPane tilePane, StackPane[] tiles)
@@ -25,7 +26,7 @@ class Team
 		this.tilePane = tilePane;
 		this.tiles = tiles;
 		this.pawns = new Pawn[4];
-		this.finalSquare = null;
+		this.finalBorder = null;
 	}
 	
 	/*// Gets the first pawn from the player's pawns and places it on it's starting tile
