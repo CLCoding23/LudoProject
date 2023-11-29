@@ -17,10 +17,12 @@ import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
 class LudoBoard 
-{
+{	
 	//Creates the tiles and player objects, return them to caller method
-	static public Team[] createTiles()
+	public Team[] createTiles()
 	{
+		StackPane[] tilesArray = new StackPane[72];
+		int tileCount = 0;
 		
 		// Initialize Gridpanes for tilePane
 		GridPane p1tilePane = new GridPane();
@@ -74,14 +76,19 @@ class LudoBoard
 					int[] pos = {j, k};
 					
 					// Create stackpane for tile and add it to player object
-					StackPane stackTile = new StackPane();
-					players[i].tiles[pawnCount] = stackTile;
+					//StackPane stackTile = new StackPane();
+					
+					
+					// Creates a gameTile object that is used for pawn movement
+					Tile gameTile = new Tile(players[i].name, pos, false);
 					
 					// Rectangle object representing tile
 					Rectangle square = new Rectangle(40f, 40f);
-					stackTile.getChildren().add(square);
+					gameTile.getChildren().add(square);
 					
-					Tile gameTile = new Tile(players[i].name, stackTile, pos, false);
+					
+					players[i].tiles[pawnCount] = gameTile;
+					
 					// If statement to determine starting tilePane, and colors them accordingly
 					if(i == 0 && j == 1 && k == 0 || i == 1 && j == 0 && k == 4 || i == 2 && j == 4 && k == 2 || i == 3 && j == 2 && k == 1)
 					{
@@ -105,7 +112,7 @@ class LudoBoard
 					players[i].tilePane.setVgap(4);
 					
 					//adds the tile to the players gameTile gridpane
-					players[i].tilePane.add(stackTile, j,  k);
+					players[i].tilePane.add(gameTile, j,  k);
 					
 					/*pawnCountTxt.setText(Integer.toString(pawnCount));
 					try
@@ -140,66 +147,68 @@ class LudoBoard
 			{
 				// Creates 4 pawns for each team, and puts them in the players pawns array
 				int[] pawnPos = {players[i].teamId, j + 1};
-				players[i].pawns[j] = new Pawn(i, j + 1, pawnPos, 35, players[i].color);
-				players[i].pawns[j].circle.setStroke(Color.BLACK);
-				players[i].pawns[j].circle.setStrokeWidth(2);			
+				players[i].pawns[j] = new Pawn(i, j + 1, pawnPos);
+				players[i].pawns[j].setRadius(35f);
+				players[i].pawns[j].setFill(players[i].color);
+				players[i].pawns[j].setStroke(Color.BLACK);
+				players[i].pawns[j].setStrokeWidth(2);			
 			}
 			
 			// Adds pawns to respective stackpanes
-			stacks[i].getChildren().addAll(pawnSpawn, players[i].pawns[0].circle, players[i].pawns[1].circle, players[i].pawns[2].circle, players[i].pawns[3].circle);
+			stacks[i].getChildren().addAll(pawnSpawn, players[i].pawns[0], players[i].pawns[1], players[i].pawns[2], players[i].pawns[3]);
 			
 			
 			// Moves the placements of the pawns, so all are displayed separately
-			players[i].pawns[0].circle.setTranslateX(-40.00);
-			players[i].pawns[0].circle.setTranslateY(40.00);
+			players[i].pawns[0].setTranslateX(-40.00);
+			players[i].pawns[0].setTranslateY(40.00);
 			
-			players[i].pawns[1].circle.setTranslateX(40.00);
-			players[i].pawns[1].circle.setTranslateY(40.00);
+			players[i].pawns[1].setTranslateX(40.00);
+			players[i].pawns[1].setTranslateY(40.00);
 			
-			players[i].pawns[2].circle.setTranslateX(-40.00);
-			players[i].pawns[2].circle.setTranslateY(-40.00);
+			players[i].pawns[2].setTranslateX(-40.00);
+			players[i].pawns[2].setTranslateY(-40.00);
 			
-			players[i].pawns[3].circle.setTranslateX(40.00);
-			players[i].pawns[3].circle.setTranslateY(-40.00);
+			players[i].pawns[3].setTranslateX(40.00);
+			players[i].pawns[3].setTranslateY(-40.00);
  
 		}
 	}
 		
 	
 	// Adds squares for final pawn area
-	static public GridPane createFinalPane(Team[] players)
+	public GridPane createFinalPane(Team[] players)
 	{
 		// Creates gridPane to place final squares
 		GridPane finalGrid = new GridPane();
 		//finalGrid.setPadding(new Insets(0));
-		
 		
 		// Creates, places, and formats final squares
 		for(int i = 0; i < players.length; i++)
 		{
 			Rectangle finalSquare = new Rectangle(75, 75);
 			
+			BorderPane borderPane = new BorderPane();
+			
 			//Adds border to final Panes
 			finalSquare.setStroke(Color.BLACK);
 			finalSquare.setStrokeWidth(2.5);
 			
 			finalSquare.setRotate(45);
-			if(i == 0) finalSquare.setTranslateX(20);
-			if(i == 1) finalSquare.setTranslateY(-20);
-			if(i == 2) finalSquare.setTranslateX(-20);
-			if(i == 3) finalSquare.setTranslateY(20);
+			if(i == 0) borderPane.setStyle("-fx-background-color: #FF0000;");
+			if(i == 1) borderPane.setStyle("-fx-background-color: #C0C0C0;");
+			if(i == 2) borderPane.setStyle("-fx-background-color: #C0C0C0;");
+			if(i == 3) borderPane.setStyle("-fx-background-color: #C0C0C0;");
 			finalSquare.setFill(players[i].color);
-			players[i].finalSquare = finalSquare;
+			players[i].finalBorder = borderPane;
 		}
 		// Places final squares in gridPane
-		finalGrid.add(players[0].finalSquare, 0, 1);
-		finalGrid.add(players[1].finalSquare, 1, 2);
-		finalGrid.add(players[2].finalSquare, 2, 1);
-		finalGrid.add(players[3].finalSquare, 1, 0);
+		finalGrid.add(players[0].finalBorder, 0, 0);
+		finalGrid.add(players[1].finalBorder, 1, 1);
+		finalGrid.add(players[2].finalBorder, 0, 1);
+		finalGrid.add(players[3].finalBorder, 1, 0);
 		
 		return finalGrid;
 	}
-		
 	
 }
 

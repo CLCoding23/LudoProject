@@ -35,8 +35,11 @@ public class LudoEngine extends Application {
 	@Override
 	public void start(Stage stage) {
 		
+		LudoBoard ludoBoard = new LudoBoard();
+		
+		
 		// calls the createTiles() method from LudoBoard, creating the tiles that the pawns must travel to finish the game
-		Team[] players = LudoBoard.createTiles();
+		Team[] players = ludoBoard.createTiles();
 		
 		BorderPane bdrPane = new BorderPane();
 		
@@ -91,7 +94,7 @@ public class LudoEngine extends Application {
 		});
 		
 		// Button for testing moving blue pawn
-		Button btnMove = new Button("Move the blue Pawn");
+		Button btnMove = new Button("Move Pawn");
 		btnMove.setMinSize(100, 50); // Sets button size
 		
 		
@@ -112,12 +115,11 @@ public class LudoEngine extends Application {
 		for(Team player : players)
 		{
 			for(Pawn pawn : player.pawns) {
-				pawn.circle.setOnMouseClicked(e -> {
+				pawn.setOnMouseClicked(e -> {
 					txtOutput.setText("You have chosen pawn " + pawn.number + " of team " + pawn.team );
-					Pawn selectPawn = pawn;
 					if(pawnList.isEmpty()) 
 					{
-						pawnList.add(selectPawn);
+						pawnList.add(pawn);
 						for(Pawn jiffypawn : pawnList)
 						{
 							System.out.println(jiffypawn.number);
@@ -126,7 +128,7 @@ public class LudoEngine extends Application {
 					else
 					{
 						pawnList.remove(0);
-						pawnList.add(selectPawn);
+						pawnList.add(pawn);
 						for(Pawn jiffypawn : pawnList)
 						{
 							System.out.println(jiffypawn.number);
@@ -153,12 +155,12 @@ public class LudoEngine extends Application {
             	}
             	
             	// If the pawn is at the spawnpoint, move it to the tile board
-            	if (pawnList.get(0).started == false) 
+            	if (pawn.started == false) 
             	{ 
             		pawn.startPawn(players[pawn.team]);
-            		pawn.started = true;
+            		
             		int[] pawnPos = pawn.getPosition();
-            		txtOutput.setText(pawnPos[0] + " " + pawnPos[1]);
+            		txtOutput.setText("The pawn is at Tile Area " + pawnPos[0] + " Tile " + pawnPos[1]);
             	}
             	// if it has started, move it however many tiles
             	else 
@@ -169,7 +171,8 @@ public class LudoEngine extends Application {
         }));
 		
 		// Adds the center squares where pawns will stay when completed
-		gameBoard.add(LudoBoard.createFinalPane(players), 1, 1);
+		gameBoard.add(ludoBoard.createFinalPane(players), 1, 1);
+		
 		
 		// Adds the gameBoard to the base bdrPane
 		bdrPane.getChildren().add(gameBoard);
@@ -180,12 +183,15 @@ public class LudoEngine extends Application {
 		Scene scene = new Scene(bdrPane);
 		// sets scene 
 		stage.setTitle("Ludo");
+		
+		
+		
 		stage.setScene(scene);
 		stage.setFullScreen(true);
 		stage.show();
-		Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
+		/*Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
 		stage.setX((primScreenBounds.getWidth() - stage.getWidth()) /2);
-		stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 2);
+		stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 2);*/
 		
 
 		// Testing starting the pawn and numbering tiles

@@ -1,5 +1,6 @@
 import java.lang.reflect.Array;
 
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
@@ -14,7 +15,7 @@ class Team
 	GridPane tilePane;
 	StackPane[] tiles;
 	Pawn[] pawns;
-	Rectangle finalSquare;
+	BorderPane finalBorder;
 	
 	// Team class constructor method
 	public Team(String name, int teamId, Color color, GridPane tilePane, StackPane[] tiles)
@@ -25,7 +26,7 @@ class Team
 		this.tilePane = tilePane;
 		this.tiles = tiles;
 		this.pawns = new Pawn[4];
-		this.finalSquare = null;
+		this.finalBorder = null;
 	}
 	
 	/*// Gets the first pawn from the player's pawns and places it on it's starting tile
@@ -41,6 +42,7 @@ class Team
 	// Returns an array of the players' tilePanes in order of tile movement, order is determined by Team.playername in an if/else statement
 	public StackPane[] orderTiles()
 	{
+		
 		StackPane[] tilePaneRef = new StackPane[18];
 		System.arraycopy(this.tiles, 0, tilePaneRef, 0, 18);
 		if(this.name == "Player 1")
