@@ -16,6 +16,4 @@ class Tile extends StackPane
 		this.position = pos;
 		this.occupied = occupied;
 	}
-	
-	
 }

@@ -15,7 +15,6 @@ class Team
 	GridPane tilePane;
 	StackPane[] tiles;
 	Pawn[] pawns;
-	BorderPane finalBorder;
 	
 	// Team class constructor method
 	public Team(String name, int teamId, Color color, GridPane tilePane, StackPane[] tiles)
@@ -26,18 +25,8 @@ class Team
 		this.tilePane = tilePane;
 		this.tiles = tiles;
 		this.pawns = new Pawn[4];
-		this.finalBorder = null;
 	}
 	
-	/*// Gets the first pawn from the player's pawns and places it on it's starting tile
-	public void startPawn(Pawn pawn)
-	{
-		this.tiles[8].getChildren().add(pawn.circle);
-		this.pawns[0].circle.setRadius(20);
-		this.pawns[0].circle.setTranslateX(0);
-		this.pawns[0].circle.setTranslateY(0);
-		
-	}*/
 	
 	// Returns an array of the players' tilePanes in order of tile movement, order is determined by Team.playername in an if/else statement
 	public StackPane[] orderTiles()

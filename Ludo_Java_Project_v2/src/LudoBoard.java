@@ -9,6 +9,7 @@ import javafx.scene.layout.StackPane;
 import javafx.scene.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.shape.Circle;
@@ -18,6 +19,11 @@ import javafx.stage.Stage;
 
 class LudoBoard 
 {	
+	int distance;
+	Team playerTurn;
+	
+	public LudoBoard() {}
+	
 	//Creates the tiles and player objects, return them to caller method
 	public Team[] createTiles()
 	{
@@ -135,19 +141,26 @@ class LudoBoard
 	}	
 	
 	static public void createPawns(Team[] players, StackPane[] stacks) {
+		// for each player
 		for(int i = 0; i < 4; i++)
 		{
-			// Creates circle object where pawns are first placed
+			// Creates circle object where pawns are first placed, sets colors
 			Circle pawnSpawn = new Circle(100, 100, 100);
 			pawnSpawn.setFill(Color.BLANCHEDALMOND);
 			pawnSpawn.setStroke(Color.BLACK);
 			pawnSpawn.setStrokeWidth(2.5);
 			
+			// Labels each player under Pawn Spawn
+			Label playerLbl = new Label(players[i].name);
+			playerLbl.setTranslateY(125);
+			stacks[i].getChildren().add(playerLbl);
+			
+			// 4 pawns on each team
 			for(int j = 0; j < 4; j++)
 			{
 				// Creates 4 pawns for each team, and puts them in the players pawns array
 				int[] pawnPos = {players[i].teamId, j + 1};
-				players[i].pawns[j] = new Pawn(i, j + 1, pawnPos);
+				players[i].pawns[j] = new Pawn(players[i], j + 1, pawnPos);
 				players[i].pawns[j].setRadius(35f);
 				players[i].pawns[j].setFill(players[i].color);
 				players[i].pawns[j].setStroke(Color.BLACK);
@@ -159,6 +172,7 @@ class LudoBoard
 			
 			
 			// Moves the placements of the pawns, so all are displayed separately
+			// Translate persists across movement, so must Un-Translate when moving to tiles
 			players[i].pawns[0].setTranslateX(-40.00);
 			players[i].pawns[0].setTranslateY(40.00);
 			
@@ -182,32 +196,44 @@ class LudoBoard
 		GridPane finalGrid = new GridPane();
 		//finalGrid.setPadding(new Insets(0));
 		
+		Rectangle[] finalSquares = new Rectangle[4];
+		
 		// Creates, places, and formats final squares
 		for(int i = 0; i < players.length; i++)
 		{
 			Rectangle finalSquare = new Rectangle(75, 75);
-			
-			BorderPane borderPane = new BorderPane();
-			
+
 			//Adds border to final Panes
 			finalSquare.setStroke(Color.BLACK);
 			finalSquare.setStrokeWidth(2.5);
 			
+			// Rotates and translates each final square accordingly to make the design
 			finalSquare.setRotate(45);
-			if(i == 0) borderPane.setStyle("-fx-background-color: #FF0000;");
-			if(i == 1) borderPane.setStyle("-fx-background-color: #C0C0C0;");
-			if(i == 2) borderPane.setStyle("-fx-background-color: #C0C0C0;");
-			if(i == 3) borderPane.setStyle("-fx-background-color: #C0C0C0;");
-			finalSquare.setFill(players[i].color);
-			players[i].finalBorder = borderPane;
+			if(i == 0) finalSquare.setTranslateX(20);
+			if(i == 1) finalSquare.setTranslateY(-20);
+			if(i == 2) finalSquare.setTranslateX(-20);
+			if(i == 3) finalSquare.setTranslateY(20);
+			finalSquare.setFill(players[i].color); // add team color
+			finalSquares[i] = finalSquare; // add to array for use later
 		}
 		// Places final squares in gridPane
-		finalGrid.add(players[0].finalBorder, 0, 0);
-		finalGrid.add(players[1].finalBorder, 1, 1);
-		finalGrid.add(players[2].finalBorder, 0, 1);
-		finalGrid.add(players[3].finalBorder, 1, 0);
+		finalGrid.add(finalSquares[0], 0, 1);
+		finalGrid.add(finalSquares[1], 1, 2);
+		finalGrid.add(finalSquares[2], 2, 1);
+		finalGrid.add(finalSquares[3], 1, 0);
+		
 		
 		return finalGrid;
+	}
+	
+	public void setDistance(int diceValue)
+	{
+		this.distance = diceValue; // Sets distance pawn will travel
+	}
+	
+	public int getDistance() 
+	{
+		return this.distance; // Returns the distance that the pawn will travel
 	}
 	
 }

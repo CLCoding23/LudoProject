@@ -6,6 +6,7 @@
  */
 
 // Import needed classes
+import java.awt.Toolkit;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
@@ -81,34 +82,50 @@ public class LudoEngine extends Application {
 		Button btnDice = new Button("Roll Dice");
 		btnDice.setMinSize(100, 50);
 		
-		
-		
-		// Text area for die value
-		TextArea rollOutput = new TextArea();
-		
-		// Event Handler for dice button
-		btnDice.setOnAction(e->
-		{
-		    int diceRoll = rand.nextInt(6) + 1; //Fixed: Dice now rolls 1-6
-            rollOutput.setText(Integer.toString(diceRoll));
-		});
-		
 		// Button for testing moving blue pawn
 		Button btnMove = new Button("Move Pawn");
 		btnMove.setMinSize(100, 50); // Sets button size
 		
 		
+		
+		// Text area for die value
+		TextArea rollOutput = new TextArea();
+		
+		// Minimize as it was causing formatting issues
+		rollOutput.setMaxSize(50, 50);
+		
+		
+		// FOR ROLLING DICE
+		btnDice.setOnAction(e->
+		{
+		    int diceRoll = rand.nextInt(6) + 1; //Fixed: Dice now rolls 1-6
+		    
+            rollOutput.setText(Integer.toString(diceRoll));
+            
+            ludoBoard.setDistance(diceRoll); // Set property in ludoBoard object so data persists across action events
+            
+            btnDice.setDisable(true); // Only allow user to roll dice once a turn
+            
+            btnMove.setDisable(false); // User can now move with dice value
+		});
+		
+		
+		
+		
 		// Adds both buttons and diceOutput text area to diceBar
 		diceBar.getChildren().addAll(btnDice, rollOutput, btnMove);
-		gameBoard.add(diceBar, 1, 3); // adds nodes to gameBoard
+		
+		diceBar.setSpacing(3);
+		
+		//gameBoard.add(diceBar, 1, 3); // adds nodes to gameBoard
 		
 		
 		// Adds a text output area and formats it to the center of the right sight of the scene
 		TextArea txtOutput = new TextArea();
 		txtOutput.setText("Pick a Pawn!");
 		txtOutput.setMaxSize(450, 350);
-		txtOutput.setTranslateX(-225);
-		txtOutput.setTranslateY(300);
+		/*txtOutput.setTranslateX(-225);
+		txtOutput.setTranslateY(300);*/
 		
 		List<Pawn> pawnList = new ArrayList<Pawn>();
 		
@@ -116,23 +133,36 @@ public class LudoEngine extends Application {
 		{
 			for(Pawn pawn : player.pawns) {
 				pawn.setOnMouseClicked(e -> {
-					txtOutput.setText("You have chosen pawn " + pawn.number + " of team " + pawn.team );
+					txtOutput.setText("You have chosen pawn " + pawn.number + " of " + pawn.team.name);
+					
+					// Dice must be rolled first to move
+					if(ludoBoard.distance == 0) btnMove.setDisable(true);
+					
+					
 					if(pawnList.isEmpty()) 
 					{
+						// To set up turns
+						ludoBoard.playerTurn = pawn.team;
+						
 						pawnList.add(pawn);
-						for(Pawn jiffypawn : pawnList)
+						for(Pawn selectPawn : pawnList)
 						{
-							System.out.println(jiffypawn.number);
+							System.out.println(selectPawn.number);
+						}
+					}
+					if(pawn.team == ludoBoard.playerTurn)
+					{
+						pawnList.remove(0);
+						pawnList.add(pawn);
+						for(Pawn selectPawn : pawnList)
+						{
+							System.out.println(selectPawn.number);
 						}
 					}
 					else
 					{
-						pawnList.remove(0);
-						pawnList.add(pawn);
-						for(Pawn jiffypawn : pawnList)
-						{
-							System.out.println(jiffypawn.number);
-						}
+						txtOutput.setText("It is " + ludoBoard.playerTurn.name + "'s turn \n" + 
+											"You have selected " + pawn.team.name);
 					}
 				});
 			}
@@ -142,6 +172,8 @@ public class LudoEngine extends Application {
 		btnMove.setOnAction((new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent event) {
+            	
+            	String outputString = "It was " + ludoBoard.playerTurn.name + "'s turn \n";
             	
             	Pawn pawn = new Pawn();
             	try
@@ -157,16 +189,27 @@ public class LudoEngine extends Application {
             	// If the pawn is at the spawnpoint, move it to the tile board
             	if (pawn.started == false) 
             	{ 
-            		pawn.startPawn(players[pawn.team]);
+            		txtOutput.setText(pawn.startPawn(pawn.team, players, ludoBoard.distance, ludoBoard, outputString));
             		
-            		int[] pawnPos = pawn.getPosition();
-            		txtOutput.setText("The pawn is at Tile Area " + pawnPos[0] + " Tile " + pawnPos[1]);
             	}
             	// if it has started, move it however many tiles
             	else 
             	{
-            		pawn.setPosition(players);
+            		String moveString = pawn.movePawn(players, ludoBoard.getDistance(), ludoBoard, outputString);
+            		
+            		int[] pawnPos = pawn.getPosition();
+            		
+            		txtOutput.setText("The pawn is at Tile Area " + pawnPos[0] + " Tile " + pawnPos[1]);
             	}
+            	
+            	//Enable dice button after movement, prevent cheating
+            	btnDice.setDisable(false);
+            	
+            	// Disable move button as it serves no purpose at the given time
+            	btnMove.setDisable(true);
+            	
+            	// Used to make sure both buttons don't get disabled
+            	ludoBoard.distance = 0;
             }
         }));
 		
@@ -175,12 +218,28 @@ public class LudoEngine extends Application {
 		
 		
 		// Adds the gameBoard to the base bdrPane
-		bdrPane.getChildren().add(gameBoard);
+		//bdrPane.getChildren().add(gameBoard);
+		bdrPane.setLeft(gameBoard);
 		
 		// adds txtOutput to the right side of the bdrpane
 		bdrPane.setRight(txtOutput);
+		bdrPane.setAlignment(txtOutput, Pos.CENTER); // Centered vertically
 		
+		// Gets the screen resolution
+		var screenRes = Toolkit.getDefaultToolkit().getScreenSize();
+		
+		// Moves the txtOutputnode to the left dynamically depending on Screen resolution
+		txtOutput.setTranslateX(-(screenRes.getWidth() / 75));
+		
+		// Move dicebar to bottom of bdrPane, fixes formatting issues with gameBoard
+		bdrPane.setBottom(diceBar);
+		
+		
+		
+		
+		// Add bdrPane to scene
 		Scene scene = new Scene(bdrPane);
+		
 		// sets scene 
 		stage.setTitle("Ludo");
 		
@@ -189,11 +248,8 @@ public class LudoEngine extends Application {
 		stage.setScene(scene);
 		stage.setFullScreen(true);
 		stage.show();
-		/*Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
-		stage.setX((primScreenBounds.getWidth() - stage.getWidth()) /2);
-		stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 2);*/
 		
-
+		//TODO - Delete Testing  method
 		// Testing starting the pawn and numbering tiles
 		for (int i = 0; i < 4; i++)
 		{
