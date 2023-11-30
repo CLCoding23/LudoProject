@@ -86,11 +86,13 @@ public class LudoEngine extends Application {
 		// Text area for die value
 		TextArea rollOutput = new TextArea();
 		
+		
 		// Event Handler for dice button
 		btnDice.setOnAction(e->
 		{
 		    int diceRoll = rand.nextInt(6) + 1; //Fixed: Dice now rolls 1-6
             rollOutput.setText(Integer.toString(diceRoll));
+            ludoBoard.setDistance(diceRoll);
 		});
 		
 		// Button for testing moving blue pawn
@@ -165,7 +167,7 @@ public class LudoEngine extends Application {
             	// if it has started, move it however many tiles
             	else 
             	{
-            		pawn.setPosition(players);
+            		pawn.movePawn(players, ludoBoard.getDistance());
             	}
             }
         }));
