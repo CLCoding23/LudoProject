@@ -103,12 +103,21 @@ public class LudoEngine extends Application {
 		gameBoard.add(diceBar, 1, 3); // adds nodes to gameBoard
 		
 		
-		// Adds a text output area and formats it to the center of the right sight of the scene
+		// Adds a text output area and formats it to the center of the right side of the scene
 		TextArea txtOutput = new TextArea();
 		txtOutput.setText("Pick a Pawn!");
 		txtOutput.setMaxSize(450, 350);
-		txtOutput.setTranslateX(-225);
-		txtOutput.setTranslateY(300);
+      
+      // Set the translation based on scene dimensions
+      double sceneWidth = 900;
+      double sceneHeight = 1440;
+
+      // Adjust the translation based on the scene dimensions
+      double txtOutputX = sceneWidth - 225 - txtOutput.getMaxWidth();
+      double txtOutputY = 500; //Can be adjusted.
+      
+		txtOutput.setTranslateX(txtOutputX);
+		txtOutput.setTranslateY(txtOutputY);
 		
 		List<Pawn> pawnList = new ArrayList<Pawn>();
 		
@@ -116,6 +125,7 @@ public class LudoEngine extends Application {
 		{
 			for(Pawn pawn : player.pawns) {
 				pawn.setOnMouseClicked(e -> {
+               txtOutput.clear();
 					txtOutput.setText("You have chosen pawn " + pawn.number + " of team " + pawn.team );
 					if(pawnList.isEmpty()) 
 					{
@@ -127,7 +137,7 @@ public class LudoEngine extends Application {
 					}
 					else
 					{
-						pawnList.remove(0);
+						pawnList.clear(); //Now pawnList.Clear
 						pawnList.add(pawn);
 						for(Pawn jiffypawn : pawnList)
 						{
