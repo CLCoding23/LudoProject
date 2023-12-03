@@ -56,16 +56,12 @@ class Pawn extends Circle {
 			returnString = "You must roll a 6 to start your pawn. \n";
 
 			//next player's turn
-			try 
-        	{
-        		ludoBoard.playerTurn = players[ludoBoard.playerTurn.teamId];
-        	}
-        	catch (IndexOutOfBoundsException e)
-        	{
-        		ludoBoard.playerTurn = players[0];
-        	}
-        	returnString += "It is now " + ludoBoard.playerTurn.name + "'s turn";
+			returnString += ludoBoard.nextTurn(players, returnString);
 		}
+		
+		
+		
+		ludoBoard.distance = 0;
 		
 		return returnString;
 	}
@@ -164,15 +160,7 @@ class Pawn extends Circle {
 		// no 6 was rolled, next player turn
 		else
 		{
-			try
-	    	{
-	    		ludoBoard.playerTurn = players[ludoBoard.playerTurn.teamId];
-	    	}
-	    	catch (IndexOutOfBoundsException e)
-	    	{
-	    		ludoBoard.playerTurn = players[0];
-	    	}
-	    	outputString += "It is now " + ludoBoard.playerTurn.name + "'s turn";
+			outputString += ludoBoard.nextTurn(players, outputString);
 		}
     	
     	return outputString;
@@ -183,6 +171,8 @@ class Pawn extends Circle {
 	{
 		String moveString = this.setPosition(players, distance, ludo, string);
 		System.out.print(this.getPosition());
+		
+		ludo.distance = 0;
 		
 		return moveString;
 	}

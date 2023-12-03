@@ -21,6 +21,7 @@ class LudoBoard
 {	
 	int distance;
 	Team playerTurn;
+	Pawn selectPawn;
 	
 	public LudoBoard() {}
 	
@@ -234,6 +235,23 @@ class LudoBoard
 	public int getDistance() 
 	{
 		return this.distance; // Returns the distance that the pawn will travel
+	}
+	
+	public String nextTurn(Team[] players, String string)
+	{
+		try
+    	{
+    		this.playerTurn = players[this.playerTurn.teamId];
+    	}
+    	catch (IndexOutOfBoundsException e)
+    	{
+    		this.playerTurn = players[0];
+    	}
+    	string += "It is now " + this.playerTurn.name + "'s turn";
+    	
+    	this.distance = 0;
+    	
+    	return string;
 	}
 	
 }
