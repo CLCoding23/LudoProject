@@ -1,6 +1,6 @@
 /*
  * Ludo Board Game Project
- * Collin Lane & Reza Naqvi
+ * Collin Lane & Reza Naqvi & Bhavya Patel
  * CPT-231-W37
  * FALL23
  */
