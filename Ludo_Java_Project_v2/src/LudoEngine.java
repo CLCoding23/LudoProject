@@ -94,6 +94,12 @@ public class LudoEngine extends Application {
 		txtOutput.setMaxSize(400, 100);
 		txtOutput.setEditable(false);
 		
+		 //Exit Button
+		Button exitButton = new Button("Exit");
+		exitButton.setMinSize(100, 50);
+		exitButton.setOnAction(e -> closeApplication());
+		   
+		
 		// Text area for die value
 		TextArea rollOutput = new TextArea();
 		rollOutput.setEditable(false);
@@ -147,7 +153,7 @@ public class LudoEngine extends Application {
 		
 		
 		// Adds button and diceOutput text area to diceBar
-		diceBar.getChildren().addAll(btnDice, rollOutput);
+		diceBar.getChildren().addAll(btnDice, rollOutput, exitButton);
 		
 		// Spacing
 		diceBar.setSpacing(3);
@@ -266,6 +272,9 @@ public class LudoEngine extends Application {
 			players[i].orderTiles();
 		}
 	}
+	private void closeApplication() { //Called from exitButton in order for exit button to work
+        System.exit(0);
+    }
 	
 	// Main method for launching program
 	public static void main(String[] args) {
