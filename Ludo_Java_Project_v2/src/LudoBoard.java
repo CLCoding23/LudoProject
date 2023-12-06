@@ -17,6 +17,16 @@ import javafx.scene.shape.TriangleMesh;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 
+/*
+ * This is the LudoBoard class, for creating the LudoBoard GUI using JavaFX
+ * 
+ * It has a empty constructor
+ * 
+ * Used to create tiles, pawn spawns, the final pane, and changing player turns
+ */
+
+
+
 class LudoBoard 
 {	
 	int distance;
@@ -61,6 +71,8 @@ class LudoBoard
 			// int variables to determine tile placements based on the iteration count
 			int col;
 			int row;
+			
+			// Determins layout of tile grid
 			if(i % 2 == 1)
 			{
 				col = 3;
@@ -76,14 +88,8 @@ class LudoBoard
 			{
 				for(int k = 0; k < row; k++)
 				{
-					
-					//Text pawnCountTxt = new Text();
-					
-					
+					// Int array used to set tile position
 					int[] pos = {j, k};
-					
-					// Create stackpane for tile and add it to player object
-					//StackPane stackTile = new StackPane();
 					
 					
 					// Creates a gameTile object that is used for pawn movement
@@ -93,21 +99,19 @@ class LudoBoard
 					Rectangle square = new Rectangle(40f, 40f);
 					gameTile.getChildren().add(square);
 					
-					
+					// Assigns the tile to the respective players tile array
 					players[i].tiles[pawnCount] = gameTile;
 					
 					// If statement to determine starting tilePane, and colors them accordingly
 					if(i == 0 && j == 1 && k == 0 || i == 1 && j == 0 && k == 4 || i == 2 && j == 4 && k == 2 || i == 3 && j == 2 && k == 1)
 					{
-						//square.setFill(players[i].color);
-						
 						// Changing starting tile to grey background, but with thick team color border
 						square.setFill(Color.GREY);
 						square.setStrokeWidth(5);
 					}
-					else 
+					else //For normal tiles
 					{ 
-						square.setFill(Color.CORNFLOWERBLUE); 
+						square.setFill(players[i].color.darker()); 
 					}
 					
 					square.setStroke(players[i].color);
@@ -121,15 +125,7 @@ class LudoBoard
 					//adds the tile to the players gameTile gridpane
 					players[i].tilePane.add(gameTile, j,  k);
 					
-					/*pawnCountTxt.setText(Integer.toString(pawnCount));
-					try
-					{
-						//players[i].tilePane.add(pawnCountTxt,  j,  k);
-					}
-					catch (Exception e)
-					{
-						System.out.println(e);
-					}*/
+					
 					pawnCount += 1;
 				}
 				
@@ -141,13 +137,14 @@ class LudoBoard
 		return players;
 	}	
 	
+	// Creates Pawns and pawn spawn areas
 	static public void createPawns(Team[] players, StackPane[] stacks) {
 		// for each player
 		for(int i = 0; i < 4; i++)
 		{
 			// Creates circle object where pawns are first placed, sets colors
 			Circle pawnSpawn = new Circle(100, 100, 100);
-			pawnSpawn.setFill(Color.BLANCHEDALMOND);
+			pawnSpawn.setFill(players[i].color.desaturate());
 			pawnSpawn.setStroke(Color.BLACK);
 			pawnSpawn.setStrokeWidth(2.5);
 			
@@ -155,6 +152,7 @@ class LudoBoard
 			Label playerLbl = new Label(players[i].name);
 			playerLbl.setTranslateY(125);
 			stacks[i].getChildren().add(playerLbl);
+			players[i].pawnSpawn = stacks[i];
 			
 			// 4 pawns on each team
 			for(int j = 0; j < 4; j++)
@@ -195,13 +193,14 @@ class LudoBoard
 	{
 		// Creates gridPane to place final squares
 		GridPane finalGrid = new GridPane();
-		//finalGrid.setPadding(new Insets(0));
 		
+		// Rectangle array holding final squares
 		Rectangle[] finalSquares = new Rectangle[4];
 		
 		// Creates, places, and formats final squares
 		for(int i = 0; i < players.length; i++)
 		{
+			// Rectangle used for final square areas, contain player's score
 			Rectangle finalSquare = new Rectangle(75, 75);
 
 			//Adds border to final Panes
@@ -216,14 +215,45 @@ class LudoBoard
 			if(i == 3) finalSquare.setTranslateY(20);
 			finalSquare.setFill(players[i].color); // add team color
 			finalSquares[i] = finalSquare; // add to array for use later
+			
+			
+			// Create labels for player scores
+			players[i].scoreLabel = new Label("0");
+			
+			players[i].scoreLabel.setScaleX(4);
+			players[i].scoreLabel.setScaleY(4);
+
+			
+			
+			// Translate score labels so they display in the center of their respective final square panes
+			if(i == 0) players[i].scoreLabel.setTranslateX(55);
+			if(i == 1)
+			{
+				players[i].scoreLabel.setTranslateX(35);
+				players[i].scoreLabel.setTranslateY(-20);
+			}
+			if(i == 2) players[i].scoreLabel.setTranslateX(15);
+			if(i == 3)
+			{
+				players[i].scoreLabel.setTranslateY(20);
+				players[i].scoreLabel.setTranslateX(35);
+			}
+			
 		}
-		// Places final squares in gridPane
+		
+		// adds final squares to the grid
 		finalGrid.add(finalSquares[0], 0, 1);
 		finalGrid.add(finalSquares[1], 1, 2);
 		finalGrid.add(finalSquares[2], 2, 1);
 		finalGrid.add(finalSquares[3], 1, 0);
 		
+		// Places final squares in gridPane
+		finalGrid.add(players[0].scoreLabel, 0, 1);
+		finalGrid.add(players[1].scoreLabel, 1, 2);
+		finalGrid.add(players[2].scoreLabel, 2, 1);
+		finalGrid.add(players[3].scoreLabel, 1, 0);
 		
+		//return finalgrid to method call
 		return finalGrid;
 	}
 	
@@ -237,10 +267,11 @@ class LudoBoard
 		return this.distance; // Returns the distance that the pawn will travel
 	}
 	
+	// Sets the current turn to the next player once the current player's turn is over
 	public String nextTurn(Team[] players, String string)
 	{
 		try
-    	{
+    	{	
     		this.playerTurn = players[this.playerTurn.teamId];
     	}
     	catch (IndexOutOfBoundsException e)

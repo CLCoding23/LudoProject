@@ -5,6 +5,10 @@
  * FALL23
  */
 
+
+// Main class of the Ludo project, contains code putting all classes together to create Ludoboard Game, with main method at the bottom
+
+
 // Import needed classes
 import java.awt.Toolkit;
 import java.util.ArrayList;
@@ -82,9 +86,6 @@ public class LudoEngine extends Application {
 		Button btnDice = new Button("Roll Dice");
 		btnDice.setMinSize(100, 50);
 		
-		// Button for testing moving blue pawn
-		Button btnMove = new Button("Move Pawn");
-		btnMove.setMinSize(100, 50); // Sets button size
 		
 		// Adds a text output area and formats it to the center of the right sight of the scene
 		TextArea txtOutput = new TextArea();
@@ -95,6 +96,7 @@ public class LudoEngine extends Application {
 		
 		// Text area for die value
 		TextArea rollOutput = new TextArea();
+		rollOutput.setEditable(false);
 		
 		// Minimize as it was causing formatting issues
 		rollOutput.setMaxSize(50, 50);
@@ -103,14 +105,17 @@ public class LudoEngine extends Application {
 		// FOR ROLLING DICE
 		btnDice.setOnAction(e->
 		{
+			// Generate number between 1 and 6
 		    int diceRoll = rand.nextInt(6) + 1; //Fixed: Dice now rolls 1-6
 		    
+		    // Show users dice output/value
             rollOutput.setText(Integer.toString(diceRoll));
             
             ludoBoard.setDistance(diceRoll); // Set property in ludoBoard object so data persists across action events
             
             btnDice.setDisable(true); // Only allow user to roll dice once a turn
             
+            // If no pawn is selected, tell user to select pawn
             if(ludoBoard.playerTurn != null)
             {
             	txtOutput.setText(ludoBoard.playerTurn.name + " has rolled a " + ludoBoard.distance + ", please select one of your pawns!");
@@ -128,7 +133,7 @@ public class LudoEngine extends Application {
 					break;
 				}
 			}
-			
+			// If no pawns have started user cannot roll without a 6, so skip to next player
             if(hasPawnStarted == false  && ludoBoard.distance != 6)
 			{
 				txtOutput.setText(ludoBoard.nextTurn(players, "You must enter a 6 to start a pawn! \n\n"));
@@ -138,43 +143,41 @@ public class LudoEngine extends Application {
 			}
             
 		});
-		btnMove.setDisable(true);
 		
 		
 		
-		// Adds both buttons and diceOutput text area to diceBar
-		diceBar.getChildren().addAll(btnDice, rollOutput, btnMove);
+		// Adds button and diceOutput text area to diceBar
+		diceBar.getChildren().addAll(btnDice, rollOutput);
 		
+		// Spacing
 		diceBar.setSpacing(3);
 		
-		//gameBoard.add(diceBar, 1, 3); // adds nodes to gameBoard
-		
-		
-		
-		
-		List<Pawn> pawnList = new ArrayList<Pawn>();
-		
+		// Loops through each pawn of each player and adds an event listener for moving the pawns
 		for(Team player : players)
 		{
 			for(Pawn pawn : player.pawns) {
 				pawn.setOnMouseClicked(e -> {
-					if(ludoBoard.distance == 0)
+					if(ludoBoard.distance == 0) // If dice hasn't been rolled, tell user to roll dice
 					{
 						txtOutput.setText("Please roll the dice before selecting which pawn to move");
 					}
-					else
-					{
+					else //dice has value
+					{	// If it is the first pawn, or it is a pawn of the current player's turn
 						if(pawn.team == ludoBoard.playerTurn || ludoBoard.selectPawn == null)
 						{
+							// Tell user selected Pawn
 							txtOutput.setText("You have chosen pawn " + pawn.number + " of " + pawn.team.name);
 							
+							// Set selected pawn
 							ludoBoard.selectPawn = pawn;
 							
+							// Set player turn if beginning 
 							if(ludoBoard.playerTurn == null)
 							{
 								ludoBoard.playerTurn = player;
 							}
 							
+							// If pawn has not started and dice value isn't 6, user turn is skipped
 							if(pawn.started == false && ludoBoard.distance != 6)
 							{
 								txtOutput.setText(ludoBoard.nextTurn(players, "You must enter a 6 to start your pawn! \n"));
@@ -182,78 +185,41 @@ public class LudoEngine extends Application {
 								btnDice.setDisable(false);
 							}
 							
+							// Starts pawn
 							else if(pawn.started == false && ludoBoard.distance == 6) 
 							{
+								// Starts the pawn and sets the txtOutput
 								txtOutput.setText(pawn.startPawn(player, players, ludoBoard.distance, ludoBoard, ""));
 								
-								// Dice must be rolled first to move
-								if(ludoBoard.distance == 0) btnMove.setDisable(true);
 								// pawn is selected, enable dice rolling
 								btnDice.setDisable(false);
 							}
+							// Normal pawn movement if pawn matches current team
 							else if(pawn.team == ludoBoard.playerTurn)
 							{
-								txtOutput.setText(pawn.movePawn(players, ludoBoard.distance, ludoBoard, ""));
-								
-								System.out.println(ludoBoard.selectPawn.number);
+								// Move pawn and set the text
+								txtOutput.setText(pawn.movePawn(players, ludoBoard, ""));
 
+								// Enable dice button
 								btnDice.setDisable(false);
 							}
 						}
-						else
+						else // If wrong team's pawn is clicked
 						{
 							txtOutput.setText("It is " + ludoBoard.playerTurn.name + "'s turn \n" + 
 									"You have selected " + pawn.team.name);
 						}
 						
+						if(player.score == 4) // If score is 4, player wins
+						{
+							txtOutput.setText(player.name + " has won the game!");
+							btnDice.setDisable(true); //Disable dice button
+						}
 					}
 					
 				});
 			}
 		}
-		
-		// Event handler for button, calls the moveBlue() function, and prints the affected pawns position to the console
-		btnMove.setOnAction((new EventHandler<ActionEvent>() {
-            @Override
-            public void handle(ActionEvent event) {
-            	
-            	String outputString = "It was " + ludoBoard.playerTurn.name + "'s turn \n";
-            	
-            	Pawn pawn = new Pawn();
-            	if(ludoBoard.selectPawn == null)
-            	{
-            		txtOutput.setText("Please pick a pawn before moving!");
-            	}
-            	else
-            	{
-            		// If the pawn is at the spawnpoint, move it to the tile board
-                	if (pawn.started == false) 
-                	{ 
-                		txtOutput.setText(pawn.startPawn(pawn.team, players, ludoBoard.distance, ludoBoard, outputString));
-                		
-                	}
-                	// if it has started, move it however many tiles
-                	else 
-                	{
-                		String moveString = pawn.movePawn(players, ludoBoard.getDistance(), ludoBoard, outputString);
-                		
-                		int[] pawnPos = pawn.getPosition();
-                		
-                		txtOutput.setText("The pawn is at Tile Area " + pawnPos[0] + " Tile " + pawnPos[1]);
-                	}
-                	
-                	//Enable dice button after movement, prevent cheating
-                	btnDice.setDisable(false);
-                	
-                	// Disable move button as it serves no purpose at the given time
-                	btnMove.setDisable(true);
-                	
-                	// Used to make sure both buttons don't get disabled
-                	ludoBoard.distance = 0;
-            	}
-            }
-        }));
-		
 		// Adds the center squares where pawns will stay when completed
 		gameBoard.add(ludoBoard.createFinalPane(players), 1, 1);
 		
@@ -272,10 +238,6 @@ public class LudoEngine extends Application {
 		// Gets the screen resolution
 		var screenRes = Toolkit.getDefaultToolkit().getScreenSize();
 		
-		
-		
-		//gameBoard.setPadding(new Insets(screenRes.getWidth() / 50 ));
-		
 		// Move dicebar to bottom of bdrPane, fixes formatting issues with gameBoard
 		bdrPane.setBottom(diceBar);
 		
@@ -289,36 +251,20 @@ public class LudoEngine extends Application {
 		stage.setTitle("Ludo");
 		
 		
-		
+		// Set stage
 		stage.setScene(scene);
 		stage.setFullScreen(true);
-		stage.show();
+		stage.show(); //Shows stage on screen
 		
 		// Moves the txtOutputnode to the left dynamically depending on Screen resolution
-		txtOutput.setTranslateX(-(stage.getWidth() / 2));
-		txtOutput.setTranslateY(stage.getHeight() / 15);
+		txtOutput.setTranslateX(-(stage.getWidth() / 25));
+		txtOutput.setTranslateY(stage.getHeight() / 25);
 		
-		//TODO - Delete Testing  method
-		// Testing starting the pawn and numbering tiles
+		// Orders the tiles to make pawn movement easier in code
 		for (int i = 0; i < 4; i++)
 		{
 			players[i].orderTiles();
-			//players[i].startPawn(players[i].pawns[0]);
-			int tileCount = 0;
-			
-			for (StackPane pane : players[i].tiles)
-			{
-				Text tileCountTxt = new Text();
-
-				tileCountTxt.setText(Integer.toString(tileCount));
-				
-				pane.getChildren().add(tileCountTxt);
-				tileCount++;
-				//System.out.print(pane + "\n");
-			}
-			
 		}
-		
 	}
 	
 	// Main method for launching program

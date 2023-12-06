@@ -1,10 +1,18 @@
 import java.lang.reflect.Array;
 
+import javafx.scene.control.Label;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+
+/*
+ * This is the team class for storing player information
+ * 
+ * it contains code for ordering the teams tiles, and holds all of the teams data with a constructor to make a object
+ */
+
 
 class Team 
 {
@@ -15,6 +23,10 @@ class Team
 	GridPane tilePane;
 	StackPane[] tiles;
 	Pawn[] pawns;
+	StackPane pawnSpawn;
+	int score;
+	Label scoreLabel;
+	int sixTracker;
 	
 	// Team class constructor method
 	public Team(String name, int teamId, Color color, GridPane tilePane, StackPane[] tiles)
@@ -25,13 +37,16 @@ class Team
 		this.tilePane = tilePane;
 		this.tiles = tiles;
 		this.pawns = new Pawn[4];
+		this.score = 0;
+		this.scoreLabel = new Label("");
+		this.sixTracker = 0;
 	}
 	
 	
 	// Returns an array of the players' tilePanes in order of tile movement, order is determined by Team.playername in an if/else statement
 	public StackPane[] orderTiles()
 	{
-		
+		// Creates an array for referencing to
 		StackPane[] tilePaneRef = new StackPane[18];
 		System.arraycopy(this.tiles, 0, tilePaneRef, 0, 18);
 		if(this.name == "Player 1")
