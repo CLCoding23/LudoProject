@@ -1,7 +1,7 @@
 /*
  * Ludo Board Game Project
  * Collin Lane & Reza Naqvi
- * CPT-231-W37
+ * CPT-237-W37
  * FALL23
  */
 
@@ -31,12 +31,35 @@ import javafx.scene.shape.TriangleMesh;
 import javafx.scene.text.Text;
 import javafx.stage.Screen;
 import javafx.stage.Stage;
+import javafx.scene.media.Media;
+import javafx.scene.media.MediaPlayer;
+
 
 public class LudoEngine extends Application {
+   
+   private MediaPlayer mediaPlayer;
+   public boolean isMuted = false;
+   private Button muteButton;
+
+
 	@Override
 	public void start(Stage stage) {
 		
 		LudoBoard ludoBoard = new LudoBoard();
+      
+      //Loads Audio File
+      String musicFile = "BGM_03.wav";
+      Media sound = new Media(getClass().getClassLoader().getResource(musicFile).toString());
+      
+      // Create a media player
+      mediaPlayer = new MediaPlayer(sound);
+
+      // Set the media player to loop indefinitely
+      mediaPlayer.setCycleCount(MediaPlayer.INDEFINITE);
+      mediaPlayer.setVolume(0.5); // Set volume to 50%
+
+      // Start playing the background music
+      mediaPlayer.play();
 		
 		
 		// calls the createTiles() method from LudoBoard, creating the tiles that the pawns must travel to finish the game
@@ -76,11 +99,21 @@ public class LudoEngine extends Application {
 		
 		//Sets padding for dice bar
 		diceBar.setPadding(new Insets(10));
+      
+      // Mute button
+      muteButton = new Button("Mute");
+      muteButton.setMinSize(100, 50);
+      muteButton.setOnAction(e -> toggleMute());
 		
 		// Creates a button for rolling die
 		Random rand = new Random();
 		Button btnDice = new Button("Roll Dice");
 		btnDice.setMinSize(100, 50);
+      
+      //Exit Button
+      Button exitButton = new Button("Exit");
+      exitButton.setMinSize(100, 50);
+      exitButton.setOnAction(e -> closeApplication());
 		
 		// Button for testing moving blue pawn
 		Button btnMove = new Button("Move Pawn");
@@ -114,9 +147,7 @@ public class LudoEngine extends Application {
             if(ludoBoard.playerTurn != null)
             {
             	txtOutput.setText(ludoBoard.playerTurn.name + " has rolled a " + ludoBoard.distance + ", please select one of your pawns!");
-            }
-            
-            
+            }  
           //Automatically skips over player if they have no pawns started and did not roll a 6
 			boolean hasPawnStarted = false;
 			
@@ -143,7 +174,7 @@ public class LudoEngine extends Application {
 		
 		
 		// Adds both buttons and diceOutput text area to diceBar
-		diceBar.getChildren().addAll(btnDice, rollOutput, btnMove);
+		diceBar.getChildren().addAll(btnDice, rollOutput, btnMove, muteButton, exitButton);
 		
 		diceBar.setSpacing(3);
 		
@@ -320,6 +351,24 @@ public class LudoEngine extends Application {
 		}
 		
 	}
+   
+   private void toggleMute() //Called from muteButton in order for mute button to work
+   {
+      isMuted = !isMuted;
+      if (isMuted) 
+      {
+         mediaPlayer.setVolume(0.0); //Mutes music
+         muteButton.setText("Unmute"); //Changes text
+      } else 
+      {
+         mediaPlayer.setVolume(0.5); // Unmutes Music
+         muteButton.setText("Mute"); //Changes Text
+      }
+   }
+   
+   private void closeApplication() { //Called from exitButton in order for exit button to work
+        System.exit(0);
+    }
 	
 	// Main method for launching program
 	public static void main(String[] args) {
