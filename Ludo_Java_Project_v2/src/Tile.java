@@ -1,10 +1,14 @@
+import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 
-//Possibly extend stackpane
+/*
+ * This class is for the Tiles. It hold data like its position, if it is occupied, and its team
+ */
+
+
 class Tile extends StackPane
 {
 	
-	//
 	String tileTeam;
 	int[] position;
 	boolean occupied;
